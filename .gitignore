@@ -13,4 +13,3 @@ node_modules/
 htmlcov/
 .DS_Store
 backend/data/raw/
-data
