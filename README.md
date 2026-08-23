@@ -6,7 +6,7 @@ A production-grade AI tarot reading web application.
 
 - Ship a **production-quality product**, not a demo: tests, CI, observability, containerization.
 - Learn core AI engineering practices: prompt design, LLM provider abstraction, streaming, structured outputs, tracing, and evals.
-- Answer to "do we need RAG?": **No**. Prompts embed only the drawn cards' full entries from the deck JSON (~a few hundred tokens), so retrieval adds nothing at this scale. RAG is deferred and only revisited if we add a large corpus (e.g., full tarot books or reading history search).
+- Answer to "do we need RAG?": **No**. Prompts embed only the drawn cards' full entries from the deck JSON (~a few hundred tokens even for a Celtic cross), so retrieval adds nothing at this scale. Vector search solves "which documents matter?" — but our RNG already decides exactly that; a keyword→vector lookup would self-retrieve the drawn cards and leak semantically adjacent ones into spreads, biasing readings. RAG is revisited only if we add a large corpus (full tarot books, reading-history search) — see Phase 6.
 
 ## Core Architecture Decisions
 
@@ -32,6 +32,7 @@ A production-grade AI tarot reading web application.
 - `data/tarot_deck.json` holds all 78 cards (Major + Minor Arcana): name, arcana, suit, rank, upright/reversed keywords & meanings.
 - Single source of truth for prompts **and** eval fixtures.
 - Prompts embed only the drawn cards' full entries plus spread position semantics — never the whole deck.
+- Source: Kaggle dataset [`lsind18/tarot-json`](https://www.kaggle.com/datasets/lsind18/tarot-json) (`light`/`shadow` meanings mapped to upright/reversed), normalized by `scripts/import_deck.py`. Raw source kept untracked under `backend/data/raw/`.
 
 ### 5. Readings are intent-first
 
@@ -44,7 +45,7 @@ A production-grade AI tarot reading web application.
 
 ## Product Scope
 
-- **Spreads:** single card, three-card (past/present/future), Celtic cross (10 named positions).
+- **Spreads:** single card, three-card (Past/Present/Future), five-card (Situation/Challenge/Root Cause/Advice/Outcome), Celtic cross (10 named positions).
 - **Intent-first readings:** every reading is driven by the user's question; interpretation adapts to the detected intent category.
 - **Reversals:** supported, configurable rate (~35% default).
 - **Interface:** web page (React) — pick a spread, draw cards with flip animation, stream the AI interpretation.
@@ -102,12 +103,12 @@ Each phase ends runnable — no phase leaves the app broken.
 
 `uv` project init, ruff + pyright strict, pytest, pre-commit hooks, GitHub Actions CI skeleton.
 
-### Phase 1 — Domain core (no LLM)
+### Phase 1 — Domain core (no LLM) ✅
 
-- `data/tarot_deck.json`: all 78 cards with keywords/meanings per orientation.
-- Spread definitions incl. Celtic cross named positions.
-- `DrawService` with injected/seeded RNG; Pydantic models.
-- Tests: deck integrity (78 unique cards), seed determinism, duplicate-free draws.
+- `data/tarot_deck.json`: all 78 cards with keywords/meanings per orientation (imported from Kaggle `lsind18/tarot-json`, enrichment fields preserved).
+- Spread definitions: single-card, three-card, five-card, Celtic cross named positions.
+- `DrawService` with injected/seeded RNG; Pydantic models; configurable reversal rate (`TAROT_REVERSAL_RATE`).
+- Tests: deck integrity (78 unique cards), seed determinism, duplicate-free draws, reversal-rate statistics, transform fixtures.
 
 ### Phase 2 — LLM integration
 

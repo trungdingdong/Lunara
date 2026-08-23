@@ -1,0 +1,53 @@
+[
+  {
+    "name": "The Fool",
+    "number": "0",
+    "arcana": "Major Arcana",
+    "suit": "Trump",
+    "img": "m00.jpg",
+    "fortune_telling": ["Watch for new projects and new beginnings", "Prepare to take something on faith"],
+    "keywords": ["freedom", "faith", "inexperience", "innocence"],
+    "meanings": {
+      "light": ["Freeing yourself from limitation", "Taking a leap of faith"],
+      "shadow": ["Being gullible and naive", "Taking unnecessary risks"]
+    },
+    "Archetype": "The Divine Madman",
+    "Hebrew Alphabet": "Aleph/Ox/1",
+    "Numerology": "0 (off the scale; pure potential)",
+    "Elemental": "Air",
+    "Mythical/Spiritual": "Adam before the fall.",
+    "Questions to Ask": ["What would I do if I felt free to take a leap?", "How willing am I to be vulnerable?"]
+  },
+  {
+    "name": "Ace of Wands",
+    "number": "1",
+    "arcana": "Minor Arcana",
+    "suit": "Wands",
+    "img": "w01.jpg",
+    "fortune_telling": ["A creative project will soon blossom"],
+    "keywords": ["creation", "willpower", "spark"],
+    "meanings": {
+      "light": ["Beginning a creative venture", "Feeling inspired"],
+      "shadow": ["Withholding your creative gifts", "Lacking direction"]
+    },
+    "Archetype": null,
+    "Elemental": "Fire",
+    "Questions to Ask": ["What wants to be created through you?"]
+  },
+  {
+    "name": "Knight of Cups",
+    "number": "12",
+    "arcana": "Minor Arcana",
+    "suit": "Cups",
+    "img": "c12.jpg",
+    "fortune_telling": ["An emotionally sensitive man approaches"],
+    "keywords": ["fervor", "zeal", "moodiness"],
+    "meanings": {
+      "light": ["Being deeply committed to a cause", "Acting on intuition alone"],
+      "shadow": ["Becoming a fanatic", "Allowing emotions to control you"]
+    },
+    "Archetype": "The Romantic",
+    "Elemental": "Air of Water",
+    "Questions to Ask": ["How prone to emotional extremes are you?"]
+  }
+]

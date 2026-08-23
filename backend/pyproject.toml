@@ -17,6 +17,7 @@ dev = [
     "ruff>=0.6",
     "pyright>=1.1.380",
     "httpx2>=2.12.0",
+    "kagglehub>=1.0.2",
 ]
 
 [tool.uv]
@@ -51,6 +52,7 @@ select = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["PLR2004"]
+"scripts/**" = ["PLR2004"]
 
 [tool.ruff.format]
 quote-style = "double"

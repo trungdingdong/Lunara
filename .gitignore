@@ -12,3 +12,5 @@ node_modules/
 .coverage
 htmlcov/
 .DS_Store
+backend/data/raw/
+data
