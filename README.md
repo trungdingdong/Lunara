@@ -1,140 +1,139 @@
-# Tarot Reader
+# Lunara 🔮
 
-A production-grade AI tarot reading web application.
+AI-powered tarot reading web application. Ask a question, draw your cards, and receive a streamed, intent-aware interpretation tailored to what you're asking about.
 
-## Goals
+## Features
 
-- Ship a **production-quality product**, not a demo: tests, CI, observability, containerization.
-- Learn core AI engineering practices: prompt design, LLM provider abstraction, streaming, structured outputs, tracing, and evals.
-- Answer to "do we need RAG?": **No**. Prompts embed only the drawn cards' full entries from the deck JSON (~a few hundred tokens even for a Celtic cross), so retrieval adds nothing at this scale. Vector search solves "which documents matter?" — but our RNG already decides exactly that; a keyword→vector lookup would self-retrieve the drawn cards and leak semantically adjacent ones into spreads, biasing readings. RAG is revisited only if we add a large corpus (full tarot books, reading-history search) — see Phase 6.
-
-## Core Architecture Decisions
-
-### 1. Randomness lives in code, not the LLM
-
-- Card draws are performed server-side by a seeded, injected RNG (`DrawService`) — deterministic under test, provably fair, and never hallucinated.
-- The LLM's only job is **interpretation**: it receives the drawn cards (name, orientation, position in spread) and generates the narrative.
-- Never ask the model "draw three cards" — that would be untestable and biased.
-
-### 2. LLM provider abstraction from day one
-
-- A `LLMProvider` protocol wraps all model calls; concrete adapters for Anthropic Claude (default), Ollama (local), and `MockProvider` (tests/CI).
-- Provider selection via environment variable — swapping vendors requires no code changes.
-- Protects against the user not having an API key yet: develop against Ollama/Mock until a key is available.
-
-### 3. Streaming via SSE for the reading UX
-
-- `POST /api/readings` returns the drawn cards immediately so the UI can animate card flips while text generates.
-- `GET /api/readings/{id}/stream` streams interpretation tokens over Server-Sent Events.
-
-### 4. Card meanings as versioned data
-
-- `data/tarot_deck.json` holds all 78 cards (Major + Minor Arcana): name, arcana, suit, rank, upright/reversed keywords & meanings.
-- Single source of truth for prompts **and** eval fixtures.
-- Prompts embed only the drawn cards' full entries plus spread position semantics — never the whole deck.
-- Source: Kaggle dataset [`lsind18/tarot-json`](https://www.kaggle.com/datasets/lsind18/tarot-json) (`light`/`shadow` meanings mapped to upright/reversed), normalized by `scripts/import_deck.py`. Raw source kept untracked under `backend/data/raw/`.
-
-### 5. Readings are intent-first
-
-- Every reading begins with a required seeker question (free text, max 500 chars) — love life, prosperity, career, future, anything.
-- A cheap structured-output classifier call routes the question to an `IntentCategory` (`love`, `career`, `prosperity`, `future`, `general`) before interpretation; low confidence or parse failure falls back to `GENERAL`.
-- The category selects a versioned prompt fragment (tone + focus areas); synthesis instructions stay constant across categories.
-- Intent shapes **interpretation only** — never which cards are drawn (decision #1 stands).
-- The question is untrusted input: length-capped, wrapped in `<user_question>` delimiters, treated as topic — never as instructions overriding the system role.
-- Interpretation streams as markdown sections: Overview → Card-by-card → Synthesis → Direct Answer → Guidance.
-
-## Product Scope
-
-- **Spreads:** single card, three-card (Past/Present/Future), five-card (Situation/Challenge/Root Cause/Advice/Outcome), Celtic cross (10 named positions).
-- **Intent-first readings:** every reading is driven by the user's question; interpretation adapts to the detected intent category.
-- **Reversals:** supported, configurable rate (~35% default).
-- **Interface:** web page (React) — pick a spread, draw cards with flip animation, stream the AI interpretation.
+- **Intent-first readings** — every reading starts from your question (love, career, prosperity, future...). A classifier routes it to a matching interpretation style.
+- **Provably fair draws** — cards are drawn server-side by a seeded RNG. The LLM never picks or invents cards; it only interprets them.
+- **78-card deck** — Major + Minor Arcana with upright/reversed meanings, sourced from a curated open dataset.
+- **Four spreads** — single card, three-card (Past/Present/Future), five-card (Situation/Challenge/Root Cause/Advice/Outcome), Celtic cross (10 positions).
+- **Reversals** — configurable rate (~35% by default).
+- **Live streaming** — interpretations stream token-by-token over Server-Sent Events while your cards flip.
+- **Pluggable LLM providers** — Anthropic Claude, local Ollama, or an offline mock. Swap via one environment variable.
 
 ## Tech Stack
 
-| Layer         | Choice                                     | Notes                                            |
-| ------------- | ------------------------------------------ | ------------------------------------------------ |
-| Language      | Python 3.12                                | Managed with `uv`                                |
-| Backend       | FastAPI + Pydantic v2                      | Async, typed contracts                           |
-| Frontend      | Vite + React + TypeScript                  | SSE consumption, card flip animations            |
-| Database      | SQLite (dev) → Postgres (prod)             | Via SQLAlchemy + Alembic migrations from day one |
-| Observability | Langfuse (self-hosted)                     | Prompt/response tracing, token & cost tracking   |
-| Evals         | promptfoo + custom pytest harness          | Prompt regression testing                        |
-| Packaging     | Docker multi-stage builds + docker-compose | One command to run everything locally            |
-| CI            | GitHub Actions                             | ruff, pyright, pytest on every push              |
+| Layer | Choice |
+|---|---|
+| Language | Python 3.12 (managed with `uv`) |
+| Backend | FastAPI + Pydantic v2 |
+| LLM | Anthropic / Ollama / Mock behind a `LLMProvider` protocol |
+| Streaming | Server-Sent Events |
+| Data | Versioned deck JSON (`data/tarot_deck.json`) |
+| Quality | Ruff, Pyright (strict), Pytest |
+| CI | GitHub Actions |
+| Packaging | Docker multi-stage builds + docker-compose |
 
-## API Design
-
-```
-POST /api/readings                  # create reading: draws cards, classifies intent, returns cards + intent_category immediately
-GET  /api/readings/{id}/stream      # SSE: streamed markdown interpretation tokens
-GET  /api/spreads                   # list available spreads
-GET  /api/readings                  # reading history
-```
-
-Core domain types (Pydantic): `Card`, `DrawnCard(card, reversed, position)`, `Spread`, `IntentCategory(love|career|prosperity|future|general)`, `ReadingRequest(spread_id, question)` — question required.
-
-## Planned Project Structure
+## Project Structure
 
 ```
 backend/
-  app/
-    main.py                 # FastAPI app factory
-    api/routes.py           # HTTP/SSE endpoints
-    core/config.py          # pydantic-settings, env-driven config
-    domain/deck.py          # deck loading, DrawService (seeded RNG)
-    domain/spreads.py       # spread definitions & position semantics
-    llm/provider.py         # LLMProvider protocol + Anthropic/Ollama/Mock adapters
-    llm/intent.py           # question → IntentCategory classifier (structured output, GENERAL fallback)
-    llm/prompts.py          # versioned base template + per-intent category fragments
-    models/schemas.py       # Pydantic models
-  data/tarot_deck.json      # 78 cards, versioned dataset
-  tests/
-frontend/                   # Vite + React + TS
-docker-compose.yml
-.github/workflows/ci.yml
+├── app/
+│   ├── main.py              # FastAPI app factory
+│   ├── api/                 # HTTP + SSE endpoints
+│   ├── core/config.py       # pydantic-settings (TAROT_ prefixed env vars)
+│   ├── domain/              # deck loading, DrawService, spread definitions
+│   ├── llm/                 # provider adapters, intent classifier, prompts
+│   ├── models/schemas.py    # Pydantic contracts
+│   └── store/memory.py      # in-memory reading store
+├── data/tarot_deck.json     # 78-card dataset
+├── scripts/import_deck.py   # rebuilds tarot_deck.json from the source dataset
+└── tests/
 ```
 
-## Roadmap
+## Getting Started
 
-Each phase ends runnable — no phase leaves the app broken.
+### Prerequisites
 
-### Phase 0 — Scaffolding
+- [uv](https://docs.astral.sh/uv/) (`pip install uv` or `curl -LsSf https://astral.sh/uv/install.sh | sh`)
+- Python 3.12 (uv installs it automatically)
+- Optional: [Ollama](https://ollama.com) for local models, or an Anthropic API key for hosted inference
 
-`uv` project init, ruff + pyright strict, pytest, pre-commit hooks, GitHub Actions CI skeleton.
+### Setup
 
-### Phase 1 — Domain core (no LLM) ✅
+```bash
+cd backend
+uv sync
+cp .env.example .env
+```
 
-- `data/tarot_deck.json`: all 78 cards with keywords/meanings per orientation (imported from Kaggle `lsind18/tarot-json`, enrichment fields preserved).
-- Spread definitions: single-card, three-card, five-card, Celtic cross named positions.
-- `DrawService` with injected/seeded RNG; Pydantic models; configurable reversal rate (`TAROT_REVERSAL_RATE`).
-- Tests: deck integrity (78 unique cards), seed determinism, duplicate-free draws, reversal-rate statistics, transform fixtures.
+The app runs out of the box with the offline mock provider — no API keys required.
 
-### Phase 2 — LLM integration
+To use a real model, edit `.env`:
 
-- `LLMProvider` protocol; MockProvider, Anthropic adapter, Ollama adapter.
-- Required `question` on `ReadingRequest`; intent classifier (structured output, GENERAL fallback).
-- Prompt v2 (`v2-intent`): per-category fragments, markdown section contract, prompt-injection guards.
-- SSE streaming endpoint wired end-to-end; `intent_category` returned at creation.
-- Tests: classifier determinism + fallback, fragment coverage per category, prompt snapshots, guard markers.
+```bash
+# Hosted (Anthropic)
+TAROT_LLM_PROVIDER=anthropic
+TAROT_ANTHROPIC_API_KEY=sk-ant-your-key-here
 
-### Phase 3 — Persistence & history
+# Or local (Ollama)
+TAROT_LLM_PROVIDER=ollama
+TAROT_OLLAMA_BASE_URL=http://localhost:11434
+TAROT_OLLAMA_MODEL=llama3.2
+```
 
-- SQLAlchemy models + Alembic migrations; save readings (incl. question + intent category), list history, replay past readings.
+### Run
 
-### Phase 4 — Frontend
+```bash
+uv run uvicorn app.main:app --reload
+```
 
-- React UI: question input, spread picker, animated card flips, live-streaming interpretation, intent badge, history view.
+- API: http://127.0.0.1:8000
+- Interactive docs: http://127.0.0.1:8000/docs
 
-### Phase 5 — Production hardening
+### Try It
 
-- Docker multi-stage build, docker-compose (api + db + langfuse), rate limiting, error handling, structured logging, Langfuse tracing on all LLM calls.
+```bash
+# Draw cards for a question
+curl -X POST http://127.0.0.1:8000/api/readings \
+  -H "Content-Type: application/json" \
+  -d '{"spread_id": "three-card", "question": "What should I focus on this month?"}'
 
-### Phase 6 — Stretch
+# Stream the interpretation (use the reading id from above)
+curl -N http://127.0.0.1:8000/api/readings/<READING_ID>/stream
+```
 
-- Evals pipeline (promptfoo + custom pytest scenarios): `(seed, spread, question)` fixture triples with per-category assertions; caching, optional auth, revisit RAG only if a large corpus is added.
+The POST returns the drawn cards immediately; the GET streams SSE events (`start`, `token*`, `done`).
 
-## Open Decisions
+## API Reference
 
-1. **Deploy target for Phase 5:** Fly.io/Railway (simple PaaS) vs Kubernetes (leverages DevOps background). Unresolved — defer until Phase 5.
-2. **LLM access:** no API key confirmed yet; mitigated by provider abstraction (develop against Ollama/Mock).
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/health` | Service health check |
+| `POST` | `/api/readings` | Create a reading: draws cards, classifies intent |
+| `GET` | `/api/readings/{id}/stream` | Stream the interpretation via SSE |
+
+Available spreads: `single-card`, `three-card`, `five-card`, `celtic-cross`.
+
+## Configuration
+
+All settings are environment variables with the `TAROT_` prefix (see `.env.example`):
+
+| Variable | Default | Description |
+|---|---|---|
+| `TAROT_LLM_PROVIDER` | `mock` | `anthropic`, `ollama`, or `mock` |
+| `TAROT_REVERSAL_RATE` | `0.35` | Probability a drawn card is reversed |
+| `TAROT_INTENT_CONFIDENCE_THRESHOLD` | `0.6` | Below this, questions classify as `general` |
+| `TAROT_ANTHROPIC_API_KEY` | — | Required when provider is `anthropic` |
+| `TAROT_OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
+| `TAROT_OLLAMA_MODEL` | `llama3.2` | Ollama model name |
+
+## Development
+
+```bash
+cd backend
+
+uv sync                                   # install dependencies
+uv run ruff check .                       # lint
+uv run ruff format .                      # format
+uv run pyright                            # type check (strict)
+uv run pytest                             # run tests
+uv run python scripts/import_deck.py      # rebuild deck data from source dataset
+```
+
+Pre-commit hooks are available:
+
+```bash
+uvx pre-commit install
+```

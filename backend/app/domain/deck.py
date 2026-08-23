@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import random
 from collections.abc import Sequence
+from functools import lru_cache
 from pathlib import Path
 
 from app.models.schemas import Arcana, Card, DrawnCard, Spread, Suit
@@ -27,6 +28,11 @@ def load_deck(path: Path | None = None) -> tuple[Card, ...]:
     cards = tuple(Card.model_validate(entry) for entry in payload["cards"])
     validate_cards(cards)
     return cards
+
+
+@lru_cache(maxsize=1)
+def get_deck() -> tuple[Card, ...]:
+    return load_deck()
 
 
 def validate_cards(cards: tuple[Card, ...]) -> None:

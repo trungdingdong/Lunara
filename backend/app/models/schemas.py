@@ -19,6 +19,14 @@ class Suit(StrEnum):
     PENTACLES = "pentacles"
 
 
+class IntentCategory(StrEnum):
+    LOVE = "love"
+    CAREER = "career"
+    PROSPERITY = "prosperity"
+    FUTURE = "future"
+    GENERAL = "general"
+
+
 class OrientationBlock(BaseModel):
     meanings: list[str] = Field(min_length=1)
 
@@ -42,6 +50,11 @@ class DrawnCard(BaseModel):
     card: Card
     is_reversed: bool
     position: str
+
+
+class ReadingRequest(BaseModel):
+    spread_id: str = Field(min_length=1)
+    question: str = Field(min_length=3, max_length=500)
 
 
 class SpreadPosition(BaseModel):
