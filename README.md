@@ -1,6 +1,6 @@
 # Tarot Reader
 
-A production-grade AI tarot reading web application, built as a hands-on vehicle for learning AI engineering (author background: DevOps transitioning into AI).
+A production-grade AI tarot reading web application.
 
 ## Goals
 
@@ -11,25 +11,30 @@ A production-grade AI tarot reading web application, built as a hands-on vehicle
 ## Core Architecture Decisions
 
 ### 1. Randomness lives in code, not the LLM
+
 - Card draws are performed server-side by a seeded, injected RNG (`DrawService`) — deterministic under test, provably fair, and never hallucinated.
 - The LLM's only job is **interpretation**: it receives the drawn cards (name, orientation, position in spread) and generates the narrative.
 - Never ask the model "draw three cards" — that would be untestable and biased.
 
 ### 2. LLM provider abstraction from day one
+
 - A `LLMProvider` protocol wraps all model calls; concrete adapters for Anthropic Claude (default), Ollama (local), and `MockProvider` (tests/CI).
 - Provider selection via environment variable — swapping vendors requires no code changes.
 - Protects against the user not having an API key yet: develop against Ollama/Mock until a key is available.
 
 ### 3. Streaming via SSE for the reading UX
+
 - `POST /api/readings` returns the drawn cards immediately so the UI can animate card flips while text generates.
 - `GET /api/readings/{id}/stream` streams interpretation tokens over Server-Sent Events.
 
 ### 4. Card meanings as versioned data
+
 - `data/tarot_deck.json` holds all 78 cards (Major + Minor Arcana): name, arcana, suit, rank, upright/reversed keywords & meanings.
 - Single source of truth for prompts **and** eval fixtures.
 - Prompts embed only the drawn cards' full entries plus spread position semantics — never the whole deck.
 
 ### 5. Readings are intent-first
+
 - Every reading begins with a required seeker question (free text, max 500 chars) — love life, prosperity, career, future, anything.
 - A cheap structured-output classifier call routes the question to an `IntentCategory` (`love`, `career`, `prosperity`, `future`, `general`) before interpretation; low confidence or parse failure falls back to `GENERAL`.
 - The category selects a versioned prompt fragment (tone + focus areas); synthesis instructions stay constant across categories.
@@ -46,16 +51,16 @@ A production-grade AI tarot reading web application, built as a hands-on vehicle
 
 ## Tech Stack
 
-| Layer | Choice | Notes |
-|---|---|---|
-| Language | Python 3.12 | Managed with `uv` |
-| Backend | FastAPI + Pydantic v2 | Async, typed contracts |
-| Frontend | Vite + React + TypeScript | SSE consumption, card flip animations |
-| Database | SQLite (dev) → Postgres (prod) | Via SQLAlchemy + Alembic migrations from day one |
-| Observability | Langfuse (self-hosted) | Prompt/response tracing, token & cost tracking |
-| Evals | promptfoo + custom pytest harness | Prompt regression testing |
-| Packaging | Docker multi-stage builds + docker-compose | One command to run everything locally |
-| CI | GitHub Actions | ruff, pyright, pytest on every push |
+| Layer         | Choice                                     | Notes                                            |
+| ------------- | ------------------------------------------ | ------------------------------------------------ |
+| Language      | Python 3.12                                | Managed with `uv`                                |
+| Backend       | FastAPI + Pydantic v2                      | Async, typed contracts                           |
+| Frontend      | Vite + React + TypeScript                  | SSE consumption, card flip animations            |
+| Database      | SQLite (dev) → Postgres (prod)             | Via SQLAlchemy + Alembic migrations from day one |
+| Observability | Langfuse (self-hosted)                     | Prompt/response tracing, token & cost tracking   |
+| Evals         | promptfoo + custom pytest harness          | Prompt regression testing                        |
+| Packaging     | Docker multi-stage builds + docker-compose | One command to run everything locally            |
+| CI            | GitHub Actions                             | ruff, pyright, pytest on every push              |
 
 ## API Design
 
@@ -94,15 +99,18 @@ docker-compose.yml
 Each phase ends runnable — no phase leaves the app broken.
 
 ### Phase 0 — Scaffolding
+
 `uv` project init, ruff + pyright strict, pytest, pre-commit hooks, GitHub Actions CI skeleton.
 
 ### Phase 1 — Domain core (no LLM)
+
 - `data/tarot_deck.json`: all 78 cards with keywords/meanings per orientation.
 - Spread definitions incl. Celtic cross named positions.
 - `DrawService` with injected/seeded RNG; Pydantic models.
 - Tests: deck integrity (78 unique cards), seed determinism, duplicate-free draws.
 
 ### Phase 2 — LLM integration
+
 - `LLMProvider` protocol; MockProvider, Anthropic adapter, Ollama adapter.
 - Required `question` on `ReadingRequest`; intent classifier (structured output, GENERAL fallback).
 - Prompt v2 (`v2-intent`): per-category fragments, markdown section contract, prompt-injection guards.
@@ -110,15 +118,19 @@ Each phase ends runnable — no phase leaves the app broken.
 - Tests: classifier determinism + fallback, fragment coverage per category, prompt snapshots, guard markers.
 
 ### Phase 3 — Persistence & history
+
 - SQLAlchemy models + Alembic migrations; save readings (incl. question + intent category), list history, replay past readings.
 
 ### Phase 4 — Frontend
+
 - React UI: question input, spread picker, animated card flips, live-streaming interpretation, intent badge, history view.
 
 ### Phase 5 — Production hardening
+
 - Docker multi-stage build, docker-compose (api + db + langfuse), rate limiting, error handling, structured logging, Langfuse tracing on all LLM calls.
 
 ### Phase 6 — Stretch
+
 - Evals pipeline (promptfoo + custom pytest scenarios): `(seed, spread, question)` fixture triples with per-category assertions; caching, optional auth, revisit RAG only if a large corpus is added.
 
 ## Open Decisions
