@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+:root {
+  /* Material Design 3 color roles — Lunara dark scheme */
+  --md-sys-color-primary: #c9a227;
+  --md-sys-color-on-primary: #0e0c1d;
+  --md-sys-color-primary-container: #33290e;
+  --md-sys-color-on-primary-container: #e9ce7a;
+  --md-sys-color-secondary: #8b86a8;
+  --md-sys-color-on-secondary: #14121f;
+  --md-sys-color-secondary-container: #262138;
+  --md-sys-color-on-secondary-container: #cdc7e6;
+  --md-sys-color-tertiary: #d97a93;
+  --md-sys-color-on-tertiary: #2a0e18;
+  --md-sys-color-tertiary-container: #4b2231;
+  --md-sys-color-on-tertiary-container: #f3cfdb;
+  --md-sys-color-error: #ffb4ab;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000a;
+  --md-sys-color-on-error-container: #ffdad6;
+  --md-sys-color-background: #0e0c1d;
+  --md-sys-color-on-background: #e8e3f4;
+  --md-sys-color-surface: #0e0c1d;
+  --md-sys-color-surface-dim: #090814;
+  --md-sys-color-surface-bright: #35324a;
+  --md-sys-color-surface-container-lowest: #0a0817;
+  --md-sys-color-surface-container-low: #171430;
+  --md-sys-color-surface-container: #1b1836;
+  --md-sys-color-surface-container-high: #262243;
+  --md-sys-color-surface-container-highest: #312e50;
+  --md-sys-color-on-surface: #e8e3f4;
+  --md-sys-color-on-surface-variant: #8b86a8;
+  --md-sys-color-outline: #57517a;
+  --md-sys-color-outline-variant: #2c2748;
+
+  /* MD3 shape + motion */
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-emphasized-easing: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-motion-duration-medium: 350ms;
+  --md-sys-motion-duration-long: 500ms;
+
+  md-filled-button,
+  md-outlined-button,
+  md-text-button {
+    --md-filled-button-container-color: var(--color-gilt);
+    --md-filled-button-label-text-color: var(--color-ink);
+    --_container-height: 52px;
+  }
+}
+
+@theme {
+  --color-primary: #c9a227;
+  --color-on-primary: #0e0c1d;
+  --color-primary-container: #33290e;
+  --color-on-primary-container: #e9ce7a;
+  --color-secondary: #8b86a8;
+  --color-secondary-container: #262138;
+  --color-on-secondary-container: #cdc7e6;
+  --color-tertiary: #d97a93;
+  --color-background: #0e0c1d;
+  --color-on-background: #e8e3f4;
+  --color-surface: #0e0c1d;
+  --color-surface-low: #171430;
+  --color-surface-container: #1b1836;
+  --color-surface-high: #262243;
+  --color-surface-highest: #312e50;
+  --color-on-surface: #e8e3f4;
+  --color-on-surface-variant: #8b86a8;
+  --color-outline: #57517a;
+  --color-outline-variant: #2c2748;
+  --color-error: #ffb4ab;
+
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-body: "Albert Sans", system-ui, sans-serif;
+  --font-utility: "IBM Plex Mono", monospace;
+
+  --ease-md-emphasized: cubic-bezier(0.2, 0, 0, 1);
+
+  --animate-deal-in: deal-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes deal-in {
+  from {
+    opacity: 0;
+    transform: translate(0, -40px) rotate(-8deg) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(var(--deal-x, 0), 0) rotate(var(--deal-r, 0deg)) scale(1);
+  }
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--md-sys-color-background);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, oklch(0.25 0.07 295 / 0.55), transparent),
+    radial-gradient(1.5px 1.5px at 12% 22%, oklch(0.9 0.02 300 / 0.35) 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 14%, oklch(0.9 0.02 300 / 0.3) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 34% 68%, oklch(0.9 0.02 300 / 0.22) 50%, transparent 51%),
+    radial-gradient(1px 1px at 62% 82%, oklch(0.9 0.02 300 / 0.26) 50%, transparent 51%),
+    radial-gradient(1.6px 1.6px at 90% 58%, oklch(0.9 0.02 300 / 0.2) 50%, transparent 51%);
+  background-attachment: fixed;
+  color: var(--md-sys-color-on-background);
+  font-family: var(--font-body);
+}
+
+.card-scene {
+  perspective: 1200px;
+}
+
+.card-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.3, 0.9, 0.3, 1);
+}
+
+.card-face {
+  backface-visibility: hidden;
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-inner,
+  [class*="animate-"] {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

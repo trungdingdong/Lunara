@@ -6,7 +6,8 @@ AI-powered tarot reading web application. Ask a question, draw your cards, and r
 
 - **Intent-first readings** — every reading starts from your question (love, career, prosperity, future...). A classifier routes it to a matching interpretation style.
 - **Provably fair draws** — cards are drawn server-side by a seeded RNG. The LLM never picks or invents cards; it only interprets them.
-- **78-card deck** — Major + Minor Arcana with upright/reversed meanings, sourced from a curated open dataset.
+- **78-card deck** — Major + Minor Arcana with upright/reversed meanings and classic Rider-Waite–style artwork, sourced from an open dataset (imagery is public-domain-era RWS; see `scripts/import_deck.py` for provenance).
+- **Material Design 3 UI** — dark mystical theme built on M3 color roles, shape, motion, and web components.
 - **Four spreads** — single card, three-card (Past/Present/Future), five-card (Situation/Challenge/Root Cause/Advice/Outcome), Celtic cross (10 positions).
 - **Reversals** — configurable rate (~35% by default).
 - **Live streaming** — interpretations stream token-by-token over Server-Sent Events while your cards flip.
@@ -88,10 +89,18 @@ uv run uvicorn app.main:app --reload
 docker compose up --build
 ```
 
-Starts the API plus a PostgreSQL 17 database (migrations apply automatically on boot). The API listens on http://localhost:8000. To use Anthropic instead of the mock provider:
+Starts the full stack: **web** (nginx-served React app at http://localhost:8080, proxying `/api` internally), **api**, and **PostgreSQL 17** (migrations apply automatically on boot). To use Anthropic instead of the mock provider:
 
 ```bash
 TAROT_LLM_PROVIDER=anthropic TAROT_ANTHROPIC_API_KEY=sk-ant-... docker compose up --build
+```
+
+### Frontend development
+
+```bash
+cd frontend
+npm install
+npm run dev        # http://localhost:5173, proxies /api to localhost:8000
 ```
 
 ### Try It

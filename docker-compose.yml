@@ -11,9 +11,24 @@ services:
       TAROT_ANTHROPIC_API_KEY: ${TAROT_ANTHROPIC_API_KEY:-}
       TAROT_REVERSAL_RATE: ${TAROT_REVERSAL_RATE:-0.35}
       TAROT_JWT_SECRET: ${TAROT_JWT_SECRET:-dev-insecure-secret-change-me}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request as u; u.urlopen('http://localhost:8000/health')\" || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
     depends_on:
       db:
         condition: service_healthy
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
     restart: unless-stopped
 
   db:
@@ -31,6 +46,19 @@ services:
       interval: 5s
       timeout: 3s
       retries: 12
+    restart: unless-stopped
+
+  fronted:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      TAROT_API_URL: ${TAROT_API_URL:-http://localhost:8000}
+    depends_on:
+      api:
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:

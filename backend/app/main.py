@@ -8,10 +8,12 @@ from pathlib import Path
 from alembic import command
 from alembic.config import Config
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import router as health_router
 from app.api.routes_draws import router as draws_router
 from app.api.routes_readings import router as readings_router
+from app.api.routes_spreads import router as spreads_router
 from app.auth.router import router as auth_router
 from app.auth.store import SQLAuthStore
 from app.core.config import Settings, get_settings
@@ -43,6 +45,12 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     session_factory = build_session_factory(engine)
 
     application = FastAPI(title=resolved.app_name, lifespan=lifespan)
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=resolved.cors_origins,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
     application.state.settings = resolved
     application.state.provider = build_provider(resolved)
     application.state.engine = engine
@@ -50,6 +58,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.state.store = SQLReadingStore(session_factory)
     application.state.auth_store = SQLAuthStore(session_factory)
     application.include_router(health_router)
+    application.include_router(spreads_router)
     application.include_router(draws_router)
     application.include_router(readings_router)
     application.include_router(auth_router)

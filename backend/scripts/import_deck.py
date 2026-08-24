@@ -13,6 +13,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BACKEND_DIR / "data"
 RAW_DIR = DATA_DIR / "raw"
 OUTPUT_PATH = DATA_DIR / "tarot_deck.json"
+IMAGES_OUTPUT_DIR = BACKEND_DIR.parent / "frontend" / "public" / "cards"
 
 DATASET_ID = "lsind18/tarot-json"
 DECK_VERSION = "1.0.0"
@@ -28,15 +29,19 @@ class ImportValidationError(ValueError):
     pass
 
 
-def fetch_raw() -> Path:
+def fetch_raw(with_images: bool = False) -> Path:
     downloaded = Path(kagglehub.dataset_download(DATASET_ID))
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     copied: list[Path] = []
     for source in sorted(downloaded.rglob("*.json")):
-        if source.is_file():
-            target = RAW_DIR / source.name
-            shutil.copy2(source, target)
-            copied.append(target)
+        target = RAW_DIR / source.name
+        shutil.copy2(source, target)
+        copied.append(target)
+    if with_images:
+        IMAGES_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        for source in sorted(downloaded.rglob("*.jpg")):
+            shutil.copy2(source, IMAGES_OUTPUT_DIR / source.name)
+            copied.append(IMAGES_OUTPUT_DIR / source.name)
     if not copied:
         raise ImportValidationError(f"no files found in kagglehub download: {downloaded}")
     return downloaded
@@ -149,6 +154,7 @@ def transform_card(raw: dict[str, Any]) -> dict[str, Any]:
         "arcana": arcana,
         "suit": suit,
         "rank": rank,
+        "img": _clean_text(raw.get("img")),
         "keywords": keywords,
         "upright": {"meanings": upright},
         "reversed": {"meanings": reversed_meanings},
@@ -189,7 +195,8 @@ def validate_deck(cards: list[dict[str, Any]]) -> None:
 
 
 def main() -> int:
-    downloaded = fetch_raw()
+    with_images = "--with-images" in sys.argv
+    downloaded = fetch_raw(with_images=with_images)
     deck_file = find_deck_file()
     print(f"[import] source file: {deck_file}")
     report_license(downloaded, deck_file)
@@ -206,6 +213,9 @@ def main() -> int:
     serialized = json.dumps(canonical, indent=2, ensure_ascii=False) + "\n"
     OUTPUT_PATH.write_text(serialized, encoding="utf-8")
     print(f"[import] wrote {len(cards)} cards -> {OUTPUT_PATH}")
+    if with_images:
+        count = len(list(IMAGES_OUTPUT_DIR.glob("*.jpg")))
+        print(f"[import] wrote {count} card images -> {IMAGES_OUTPUT_DIR}")
     return 0
 
 

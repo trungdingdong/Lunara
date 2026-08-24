@@ -12,7 +12,7 @@ FIXTURE_PATH = Path(__file__).resolve().parents[1] / "tests" / "fixtures" / "raw
 
 @pytest.fixture
 def raw_cards() -> list[RawCard]:
-    return json.loads(FIXTURE_PATH.read_text(encoding="utf-8"))
+    return json.loads(FIXTURE_PATH.read_text(encoding="utf-8-sig"))
 
 
 def test_transform_maps_major_arcana(raw_cards: list[RawCard]) -> None:
@@ -23,6 +23,7 @@ def test_transform_maps_major_arcana(raw_cards: list[RawCard]) -> None:
     assert card["arcana"] == "major"
     assert card["suit"] is None
     assert card["rank"] == 0
+    assert card["img"] == "m00.jpg"
     assert card["keywords"] == ["freedom", "faith", "inexperience", "innocence"]
     assert card["upright"]["meanings"] == expected_upright
     assert card["reversed"]["meanings"] == ["Being gullible and naive", "Taking unnecessary risks"]

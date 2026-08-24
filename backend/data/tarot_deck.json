@@ -11,6 +11,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 0,
+      "img": "m00.jpg",
       "keywords": [
         "freedom",
         "faith",
@@ -59,6 +60,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 1,
+      "img": "m01.jpg",
       "keywords": [
         "capability",
         "empowerment",
@@ -102,6 +104,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 2,
+      "img": "m02.jpg",
       "keywords": [
         "intuition",
         "reflection",
@@ -148,6 +151,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 3,
+      "img": "m03.jpg",
       "keywords": [
         "fertility",
         "productivity",
@@ -195,6 +199,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 4,
+      "img": "m04.jpg",
       "keywords": [
         "authority",
         "regulation",
@@ -239,6 +244,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 5,
+      "img": "m05.jpg",
       "keywords": [
         "guidance",
         "knowledge",
@@ -285,6 +291,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 6,
+      "img": "m06.jpg",
       "keywords": [
         "love",
         "passion",
@@ -329,6 +336,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 7,
+      "img": "m07.jpg",
       "keywords": [
         "advancement",
         "victory",
@@ -372,6 +380,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 8,
+      "img": "m08.jpg",
       "keywords": [
         "discipline",
         "boldness",
@@ -414,6 +423,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 9,
+      "img": "m09.jpg",
       "keywords": [
         "solitude",
         "experience",
@@ -457,6 +467,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 10,
+      "img": "m10.jpg",
       "keywords": [
         "luck",
         "randomness",
@@ -501,6 +512,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 11,
+      "img": "m11.jpg",
       "keywords": [
         "balance",
         "law",
@@ -545,6 +557,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 12,
+      "img": "m12.jpg",
       "keywords": [
         "enlightenment",
         "sacrifice",
@@ -589,6 +602,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 13,
+      "img": "m13.jpg",
       "keywords": [
         "ending",
         "conclusion",
@@ -633,6 +647,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 14,
+      "img": "m14.jpg",
       "keywords": [
         "blending",
         "synthesis",
@@ -679,6 +694,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 15,
+      "img": "m15.jpg",
       "keywords": [
         "shadow",
         "materialism",
@@ -724,6 +740,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 16,
+      "img": "m16.jpg",
       "keywords": [
         "demolition",
         "upheaval",
@@ -770,6 +787,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 17,
+      "img": "m17.jpg",
       "keywords": [
         "hope",
         "optimism",
@@ -817,6 +835,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 18,
+      "img": "m18.jpg",
       "keywords": [
         "mystery",
         "fantasy",
@@ -861,6 +880,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 19,
+      "img": "m19.jpg",
       "keywords": [
         "joy",
         "brilliance",
@@ -904,6 +924,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 20,
+      "img": "m20.jpg",
       "keywords": [
         "revival",
         "renewal",
@@ -949,6 +970,7 @@
       "arcana": "major",
       "suit": null,
       "rank": 21,
+      "img": "m21.jpg",
       "keywords": [
         "wholeness",
         "integration",
@@ -993,6 +1015,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 1,
+      "img": "c01.jpg",
       "keywords": [
         "intuition",
         "spirituality",
@@ -1038,6 +1061,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 2,
+      "img": "c02.jpg",
       "keywords": [
         "union",
         "attraction",
@@ -1083,6 +1107,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 3,
+      "img": "c03.jpg",
       "keywords": [
         "celebration",
         "expression",
@@ -1124,6 +1149,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 4,
+      "img": "c04.jpg",
       "keywords": [
         "boredom",
         "listlessness",
@@ -1168,6 +1194,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 5,
+      "img": "c05.jpg",
       "keywords": [
         "loss",
         "despair",
@@ -1216,6 +1243,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 6,
+      "img": "c06.jpg",
       "keywords": [
         "charity",
         "sharing",
@@ -1260,6 +1288,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 7,
+      "img": "c07.jpg",
       "keywords": [
         "imagination",
         "dreams",
@@ -1302,6 +1331,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 8,
+      "img": "c08.jpg",
       "keywords": [
         "longing",
         "dissatisfaction",
@@ -1350,6 +1380,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 9,
+      "img": "c09.jpg",
       "keywords": [
         "satisfaction",
         "sensuality",
@@ -1394,6 +1425,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 10,
+      "img": "c10.jpg",
       "keywords": [
         "joy",
         "fulfillment",
@@ -1435,6 +1467,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 11,
+      "img": "c11.jpg",
       "keywords": [
         "enthusiasm",
         "first impressions",
@@ -1479,6 +1512,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 12,
+      "img": "c12.jpg",
       "keywords": [
         "fervor",
         "zeal",
@@ -1521,6 +1555,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 13,
+      "img": "c13.jpg",
       "keywords": [
         "insightfulness",
         "spirituality",
@@ -1563,6 +1598,7 @@
       "arcana": "minor",
       "suit": "cups",
       "rank": 14,
+      "img": "c14.jpg",
       "keywords": [
         "wisdom",
         "diplomacy",
@@ -1604,6 +1640,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 1,
+      "img": "s01.jpg",
       "keywords": [
         "logic",
         "objectivity",
@@ -1649,6 +1686,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 2,
+      "img": "s02.jpg",
       "keywords": [
         "denial",
         "debate",
@@ -1692,6 +1730,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 3,
+      "img": "s03.jpg",
       "keywords": [
         "variance",
         "difference",
@@ -1735,6 +1774,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 4,
+      "img": "s04.jpg",
       "keywords": [
         "meditation",
         "contemplation",
@@ -1776,6 +1816,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 5,
+      "img": "s05.jpg",
       "keywords": [
         "selfishness",
         "hostility",
@@ -1822,6 +1863,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 6,
+      "img": "s06.jpg",
       "keywords": [
         "adaptation",
         "adjustments",
@@ -1866,6 +1908,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 7,
+      "img": "s07.jpg",
       "keywords": [
         "dishonesty",
         "presumption",
@@ -1908,6 +1951,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 8,
+      "img": "s08.jpg",
       "keywords": [
         "restriction",
         "limitation",
@@ -1955,6 +1999,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 9,
+      "img": "s09.jpg",
       "keywords": [
         "remorse",
         "worry",
@@ -2000,6 +2045,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 10,
+      "img": "s10.jpg",
       "keywords": [
         "exhaustion",
         "ruin",
@@ -2046,6 +2092,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 11,
+      "img": "s11.jpg",
       "keywords": [
         "student",
         "apprentice",
@@ -2090,6 +2137,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 12,
+      "img": "s12.jpg",
       "keywords": [
         "bluntness",
         "intelligence",
@@ -2139,6 +2187,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 13,
+      "img": "s13.jpg",
       "keywords": [
         "grace",
         "skill",
@@ -2187,6 +2236,7 @@
       "arcana": "minor",
       "suit": "swords",
       "rank": 14,
+      "img": "s14.jpg",
       "keywords": [
         "genius",
         "expertise",
@@ -2231,6 +2281,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 1,
+      "img": "w01.jpg",
       "keywords": [
         "desire",
         "inspiration",
@@ -2278,6 +2329,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 2,
+      "img": "w02.jpg",
       "keywords": [
         "conflict",
         "decision",
@@ -2321,6 +2373,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 3,
+      "img": "w03.jpg",
       "keywords": [
         "implementation",
         "action",
@@ -2364,6 +2417,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 4,
+      "img": "w04.jpg",
       "keywords": [
         "celebration",
         "jubilation",
@@ -2407,6 +2461,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 5,
+      "img": "w05.jpg",
       "keywords": [
         "confrontation",
         "disruption",
@@ -2449,6 +2504,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 6,
+      "img": "w06.jpg",
       "keywords": [
         "victory",
         "achievement",
@@ -2495,6 +2551,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 7,
+      "img": "w07.jpg",
       "keywords": [
         "bravery",
         "resolve",
@@ -2537,6 +2594,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 8,
+      "img": "w08.jpg",
       "keywords": [
         "speed",
         "swiftness",
@@ -2582,6 +2640,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 9,
+      "img": "w09.jpg",
       "keywords": [
         "toughness",
         "persistence",
@@ -2629,6 +2688,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 10,
+      "img": "w10.jpg",
       "keywords": [
         "exhaustion",
         "resistance",
@@ -2671,6 +2731,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 11,
+      "img": "w11.jpg",
       "keywords": [
         "enthusiasm",
         "eagerness",
@@ -2713,6 +2774,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 12,
+      "img": "w12.jpg",
       "keywords": [
         "boldness",
         "bravado",
@@ -2757,6 +2819,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 13,
+      "img": "w13.jpg",
       "keywords": [
         "attention",
         "attraction",
@@ -2797,6 +2860,7 @@
       "arcana": "minor",
       "suit": "wands",
       "rank": 14,
+      "img": "w14.jpg",
       "keywords": [
         "creativity",
         "ingenuity",
@@ -2837,6 +2901,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 1,
+      "img": "p01.jpg",
       "keywords": [
         "health",
         "wealth",
@@ -2880,6 +2945,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 2,
+      "img": "p02.jpg",
       "keywords": [
         "evaluation",
         "decision",
@@ -2924,6 +2990,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 3,
+      "img": "p03.jpg",
       "keywords": [
         "expression",
         "production",
@@ -2969,6 +3036,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 4,
+      "img": "p04.jpg",
       "keywords": [
         "protection",
         "conservation",
@@ -3013,6 +3081,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 5,
+      "img": "p05.jpg",
       "keywords": [
         "poverty",
         "destitution",
@@ -3058,6 +3127,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 6,
+      "img": "p06.jpg",
       "keywords": [
         "charity",
         "fairness",
@@ -3103,6 +3173,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 7,
+      "img": "p07.jpg",
       "keywords": [
         "assessment",
         "evaluation",
@@ -3147,6 +3218,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 8,
+      "img": "p08.jpg",
       "keywords": [
         "effort",
         "work diligence",
@@ -3193,6 +3265,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 9,
+      "img": "p09.jpg",
       "keywords": [
         "training",
         "discipline",
@@ -3235,6 +3308,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 10,
+      "img": "p10.jpg",
       "keywords": [
         "wealth",
         "abundance",
@@ -3278,6 +3352,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 11,
+      "img": "p11.jpg",
       "keywords": [
         "practicality",
         "prosperity",
@@ -3322,6 +3397,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 12,
+      "img": "p12.jpg",
       "keywords": [
         "caution",
         "focus",
@@ -3369,6 +3445,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 13,
+      "img": "p13.jpg",
       "keywords": [
         "luxury",
         "comfort",
@@ -3412,6 +3489,7 @@
       "arcana": "minor",
       "suit": "pentacles",
       "rank": 14,
+      "img": "p14.jpg",
       "keywords": [
         "stability",
         "dependability",

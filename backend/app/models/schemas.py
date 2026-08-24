@@ -39,6 +39,7 @@ class Card(BaseModel):
     arcana: Arcana
     suit: Suit | None = None
     rank: int = Field(ge=0, le=21)
+    img: str | None = None
     keywords: list[str] = Field(min_length=1)
     upright: OrientationBlock
     reversed: OrientationBlock

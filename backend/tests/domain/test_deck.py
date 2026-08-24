@@ -38,6 +38,11 @@ def test_deck_orientations_populated(deck: tuple[Card, ...]) -> None:
         assert card.reversed.meanings
 
 
+def test_deck_images_populated(deck: tuple[Card, ...]) -> None:
+    for card in deck:
+        assert card.img is not None and card.img.endswith(".jpg")
+
+
 def test_deck_enrichment_fields_present(deck: tuple[Card, ...]) -> None:
     fool = next(card for card in deck if card.id == "the-fool")
 

@@ -23,6 +23,8 @@ class Settings(BaseSettings):
 
     database_url: str = "sqlite+aiosqlite:///./data/app.db"
 
+    cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173"])
+
     jwt_secret: str = "dev-insecure-secret-change-me"
     access_token_minutes: int = Field(default=30, ge=1)
     refresh_token_days: int = Field(default=14, ge=1)
