@@ -12,6 +12,8 @@ from fastapi import FastAPI
 from app.api.routes import router as health_router
 from app.api.routes_draws import router as draws_router
 from app.api.routes_readings import router as readings_router
+from app.auth.router import router as auth_router
+from app.auth.store import SQLAuthStore
 from app.core.config import Settings, get_settings
 from app.db.engine import build_engine, build_session_factory
 from app.llm.provider import build_provider
@@ -46,9 +48,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     application.state.engine = engine
     application.state.session_factory = session_factory
     application.state.store = SQLReadingStore(session_factory)
+    application.state.auth_store = SQLAuthStore(session_factory)
     application.include_router(health_router)
     application.include_router(draws_router)
     application.include_router(readings_router)
+    application.include_router(auth_router)
     return application
 
 

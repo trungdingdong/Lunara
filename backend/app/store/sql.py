@@ -11,9 +11,10 @@ from app.models.schemas import DrawnCard
 from app.store.base import NewReading, StoredReading
 
 
-def _to_stored(row: ReadingModel) -> StoredReading:
+def row_to_stored(row: ReadingModel) -> StoredReading:
     return StoredReading(
         id=row.id,
+        user_id=row.user_id,
         spread_id=row.spread_id,
         spread_name=row.spread_name,
         question=row.question,
@@ -35,6 +36,7 @@ class SQLReadingStore:
     async def create(self, reading: NewReading) -> StoredReading:
         async with self._session_factory() as session:
             row = ReadingModel(
+                user_id=reading.user_id,
                 spread_id=reading.spread_id,
                 spread_name=reading.spread_name,
                 question=reading.question,
@@ -49,12 +51,12 @@ class SQLReadingStore:
             session.add(row)
             await session.commit()
             await session.refresh(row)
-            return _to_stored(row)
+            return row_to_stored(row)
 
     async def get(self, reading_id: uuid_module.UUID) -> StoredReading | None:
         async with self._session_factory() as session:
             row = await session.get(ReadingModel, reading_id)
-            return _to_stored(row) if row is not None else None
+            return row_to_stored(row) if row is not None else None
 
     async def list_readings(self, *, limit: int, offset: int) -> Sequence[StoredReading]:
         statement = (
@@ -65,7 +67,7 @@ class SQLReadingStore:
         )
         async with self._session_factory() as session:
             rows = (await session.scalars(statement)).all()
-            return [_to_stored(row) for row in rows]
+            return [row_to_stored(row) for row in rows]
 
     async def update_interpretation(self, reading_id: uuid_module.UUID, text: str) -> None:
         async with self._session_factory() as session:

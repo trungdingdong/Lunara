@@ -23,6 +23,10 @@ class Settings(BaseSettings):
 
     database_url: str = "sqlite+aiosqlite:///./data/app.db"
 
+    jwt_secret: str = "dev-insecure-secret-change-me"
+    access_token_minutes: int = Field(default=30, ge=1)
+    refresh_token_days: int = Field(default=14, ge=1)
+
     @model_validator(mode="after")
     def _require_key_for_anthropic(self) -> Settings:
         if self.llm_provider == "anthropic" and not self.anthropic_api_key:

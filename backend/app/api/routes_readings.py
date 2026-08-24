@@ -11,6 +11,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Query, Request, status
 from fastapi.responses import StreamingResponse
 
+from app.auth.security import OptionalUser
 from app.core.config import Settings
 from app.domain.deck import DrawService, get_deck
 from app.domain.spreads import get_spread
@@ -28,7 +29,11 @@ def _sse(event: str, data: dict[str, Any]) -> str:
 
 
 @router.post("", response_model=StoredReading, status_code=status.HTTP_201_CREATED)
-async def create_reading(payload: ReadingRequest, request: Request) -> StoredReading:
+async def create_reading(
+    payload: ReadingRequest,
+    request: Request,
+    user: OptionalUser,
+) -> StoredReading:
     settings: Settings = request.app.state.settings
     store = request.app.state.store
 
@@ -49,6 +54,7 @@ async def create_reading(payload: ReadingRequest, request: Request) -> StoredRea
     )
 
     new_reading = NewReading(
+        user_id=user.id if user else None,
         spread_id=spread.id,
         spread_name=spread.name,
         question=payload.question,

@@ -4,37 +4,9 @@ import uuid as uuid_module
 from collections.abc import Sequence
 from typing import Protocol, runtime_checkable
 
-from pydantic import BaseModel
+from app.models.schemas import NewReading, StoredReading
 
-from app.models.schemas import DrawnCard, IntentCategory
-
-
-class StoredReading(BaseModel):
-    id: uuid_module.UUID
-    spread_id: str
-    spread_name: str
-    question: str
-    intent_category: IntentCategory
-    drawn_cards: list[DrawnCard]
-    interpretation_text: str | None = None
-    seed: int
-    reversal_rate: float
-    provider: str
-    model_name: str
-    prompt_version: str
-
-
-class NewReading(BaseModel):
-    spread_id: str
-    spread_name: str
-    question: str
-    intent_category: IntentCategory
-    drawn_cards: list[DrawnCard]
-    seed: int
-    reversal_rate: float
-    provider: str = "mock"
-    model_name: str = "mock"
-    prompt_version: str = "v2-intent"
+__all__: list[str] = ["NewReading", "ReadingStore", "StoredReading"]
 
 
 @runtime_checkable

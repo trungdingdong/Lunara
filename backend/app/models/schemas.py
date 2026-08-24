@@ -1,6 +1,8 @@
+from datetime import datetime
 from enum import StrEnum
+from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field
 
 
 class HealthResponse(BaseModel):
@@ -65,6 +67,64 @@ class DrawResponse(BaseModel):
     spread_id: str
     seed: int
     drawn_cards: list[DrawnCard]
+
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=8, max_length=72)
+    display_name: str | None = Field(default=None, min_length=1, max_length=64)
+
+
+class UserPublic(BaseModel):
+    id: UUID
+    email: str
+    display_name: str | None = None
+    created_at: datetime
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    refresh_token: str
+    token_type: str = "bearer"
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str = Field(min_length=16)
+
+
+class StoredReading(BaseModel):
+    id: UUID
+    user_id: UUID | None = None
+    spread_id: str
+    spread_name: str
+    question: str
+    intent_category: IntentCategory
+    drawn_cards: list[DrawnCard]
+    interpretation_text: str | None = None
+    seed: int
+    reversal_rate: float
+    provider: str
+    model_name: str
+    prompt_version: str
+
+
+class NewReading(BaseModel):
+    user_id: UUID | None = None
+    spread_id: str
+    spread_name: str
+    question: str
+    intent_category: IntentCategory
+    drawn_cards: list[DrawnCard]
+    seed: int
+    reversal_rate: float
+    provider: str = "mock"
+    model_name: str = "mock"
+    prompt_version: str = "v2-intent"
+
+
+class ExportBundle(BaseModel):
+    user: UserPublic
+    readings: list[StoredReading]
 
 
 class SpreadPosition(BaseModel):

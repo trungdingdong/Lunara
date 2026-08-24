@@ -10,6 +10,7 @@ services:
       TAROT_LLM_PROVIDER: ${TAROT_LLM_PROVIDER:-mock}
       TAROT_ANTHROPIC_API_KEY: ${TAROT_ANTHROPIC_API_KEY:-}
       TAROT_REVERSAL_RATE: ${TAROT_REVERSAL_RATE:-0.35}
+      TAROT_JWT_SECRET: ${TAROT_JWT_SECRET:-dev-insecure-secret-change-me}
     depends_on:
       db:
         condition: service_healthy

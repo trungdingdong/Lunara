@@ -113,7 +113,17 @@ The POST returns the drawn cards immediately; the GET streams SSE events (`start
 | Method | Path | Description |
 |---|---|---|
 | `GET` | `/health` | Service health check |
-| `POST` | `/api/readings` | Create a reading: draws cards, classifies intent |
+| `POST` | `/api/auth/register` | Create an account |
+| `POST` | `/api/auth/login` | Obtain access + refresh tokens |
+| `POST` | `/api/auth/refresh` | Rotate refresh token, get a fresh pair |
+| `POST` | `/api/auth/logout` | Revoke a refresh token |
+| `GET` | `/api/auth/me` | Current user (requires bearer token) |
+| `DELETE` | `/api/auth/me` | Delete account and all associated data |
+| `GET` | `/api/auth/me/export` | Export your data as JSON |
+| `POST` | `/api/draws` | Draw cards for a spread (ephemeral, no persistence) |
+| `POST` | `/api/readings` | Create a reading: draws cards, classifies intent, persists it |
+| `GET` | `/api/readings/{id}` | Fetch one reading |
+| `GET` | `/api/readings?limit&offset` | List recent readings |
 | `GET` | `/api/readings/{id}/stream` | Stream the interpretation via SSE |
 
 Available spreads: `single-card`, `three-card`, `five-card`, `celtic-cross`.
@@ -130,6 +140,10 @@ All settings are environment variables with the `TAROT_` prefix (see `.env.examp
 | `TAROT_ANTHROPIC_API_KEY` | — | Required when provider is `anthropic` |
 | `TAROT_OLLAMA_BASE_URL` | `http://localhost:11434` | Ollama server URL |
 | `TAROT_OLLAMA_MODEL` | `llama3.2` | Ollama model name |
+| `TAROT_JWT_SECRET` | dev value | **Change in any real deployment** — signs access tokens |
+| `TAROT_ACCESS_TOKEN_MINUTES` | `30` | Access token lifetime |
+| `TAROT_REFRESH_TOKEN_DAYS` | `14` | Refresh token lifetime |
+| `TAROT_DATABASE_URL` | SQLite file | Any SQLAlchemy async URL (Postgres supported) |
 
 ## Development
 

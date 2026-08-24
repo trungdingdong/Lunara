@@ -13,6 +13,7 @@ class InMemoryReadingStore:
     async def create(self, reading: NewReading) -> StoredReading:
         stored = StoredReading(
             id=uuid_module.uuid4(),
+            user_id=reading.user_id,
             spread_id=reading.spread_id,
             spread_name=reading.spread_name,
             question=reading.question,
