@@ -1,14 +1,12 @@
 ﻿import { useMemo } from "react";
 
-import { parseSections } from "@/lib/tarot";
+import { EXPECTED_SECTION_COUNT, parseSections } from "@/lib/tarot";
 
 interface StreamPaneProps {
   text: string;
   streaming: boolean;
   failed: boolean;
 }
-
-const TOTAL_SECTIONS = 5;
 
 export function StreamPane({ text, streaming, failed }: StreamPaneProps) {
   const sections = useMemo(() => parseSections(text), [text]);
@@ -29,7 +27,7 @@ export function StreamPane({ text, streaming, failed }: StreamPaneProps) {
     );
   }
 
-  const progress = Math.min(sections.length / TOTAL_SECTIONS, 1);
+  const progress = Math.min(sections.length / EXPECTED_SECTION_COUNT, 1);
 
   return (
     <div className="mt-12">

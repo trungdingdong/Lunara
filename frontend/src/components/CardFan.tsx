@@ -1,6 +1,5 @@
-﻿import { useEffect, useState } from "react";
-
-import type { DrawnCard } from "@/lib/api";
+﻿import type { DrawnCard } from "@/lib/api";
+import { DEFAULT_DEAL_TIMING, useDealSequence, useSingleFire } from "@/lib/dealSequence";
 import { TarotCard } from "@/components/TarotCard";
 
 interface CardFanProps {
@@ -8,29 +7,11 @@ interface CardFanProps {
   onAllRevealed: () => void;
 }
 
-const FLIP_INTERVAL_MS = 420;
-
 export function CardFan({ cards, onAllRevealed }: CardFanProps) {
-  const [dealt, setDealt] = useState(false);
-  const [revealedCount, setRevealedCount] = useState(0);
+  const sequence = useDealSequence(cards.length);
+  const allRevealed = cards.length > 0 && sequence.dealt && sequence.revealedCount >= cards.length;
 
-  useEffect(() => {
-    const dealTimer = window.setTimeout(() => setDealt(true), 60);
-    return () => window.clearTimeout(dealTimer);
-  }, []);
-
-  useEffect(() => {
-    if (!dealt) return;
-    if (revealedCount >= cards.length) {
-      onAllRevealed();
-      return;
-    }
-    const timer = window.setTimeout(
-      () => setRevealedCount((count) => count + 1),
-      FLIP_INTERVAL_MS,
-    );
-    return () => window.clearTimeout(timer);
-  }, [dealt, revealedCount, cards.length, onAllRevealed]);
+  useSingleFire(onAllRevealed, allRevealed);
 
   return (
     <div
@@ -43,16 +24,16 @@ export function CardFan({ cards, onAllRevealed }: CardFanProps) {
         <div
           key={`${drawn.card.id}-${index}`}
           role="listitem"
-          className={dealt ? "animate-deal-in" : "opacity-0"}
+          className={sequence.dealt ? "animate-deal-in" : "opacity-0"}
           style={
             {
               "--deal-x": `${(index - (cards.length - 1) / 2) * 14}px`,
               "--deal-r": `${(index - (cards.length - 1) / 2) * 2.2}deg`,
-              animationDelay: `${index * 110}ms`,
+              animationDelay: `${index * (DEFAULT_DEAL_TIMING.flipIntervalMs / 4)}ms`,
             } as React.CSSProperties
           }
         >
-          <TarotCard drawn={drawn} flipped={dealt && index < revealedCount} />
+          <TarotCard drawn={drawn} flipped={sequence.dealt && index < sequence.revealedCount} />
         </div>
       ))}
     </div>

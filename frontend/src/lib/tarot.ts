@@ -34,7 +34,7 @@ export function rankLabel(card: { arcana: string; rank: number }): string {
   return card.arcana === "major" ? (ROMAN[card.rank] ?? String(card.rank)) : String(card.rank);
 }
 
-export function suitGlyph(suit: string | null): string {
+export function suitGlyph(suit: string | null | undefined): string {
   return suit ? (SUIT_GLYPH[suit] ?? "") : "\u2736";
 }
 
@@ -42,6 +42,9 @@ export interface Section {
   title: string;
   body: string;
 }
+
+/** Mirrors the five-section contract in backend/app/llm/prompts.py (PROMPT_VERSION v2-intent). */
+export const EXPECTED_SECTION_COUNT = 5;
 
 export function parseSections(text: string): Section[] {
   const sections: Section[] = [];

@@ -1,52 +1,24 @@
-export type Arcana = "major" | "minor";
+import { readSseFrames } from "@/lib/sse";
 
-export type Suit = "wands" | "cups" | "swords" | "pentacles";
+import type { components } from "@/types/api";
 
-export interface OrientationBlock {
-  meanings: string[];
-}
+type Schemas = components["schemas"];
 
-export interface Card {
-  id: string;
-  name: string;
-  arcana: Arcana;
-  suit: Suit | null;
-  rank: number;
-  img: string | null;
-  keywords: string[];
-  upright: OrientationBlock;
-  reversed: OrientationBlock;
-}
+export type Arcana = Schemas["Arcana"];
+export type Suit = Schemas["Suit"];
+export type IntentCategory = Schemas["IntentCategory"];
+export type Card = Schemas["Card"];
+export type DrawnCard = Schemas["DrawnCard"];
+export type Spread = Schemas["Spread"];
+export type StoredReading = Schemas["StoredReading"];
 
-export interface DrawnCard {
-  card: Card;
-  is_reversed: boolean;
-  position: string;
-}
+const API_PREFIX = "/api";
+const CARDS_ASSET_PREFIX = "/cards/";
 
-export interface Spread {
-  id: string;
-  name: string;
-  positions: { index: number; name: string }[];
-}
-
-export interface StoredReading {
-  id: string;
-  user_id: string | null;
-  spread_id: string;
-  spread_name: string;
-  question: string;
-  intent_category: string;
-  drawn_cards: DrawnCard[];
-  interpretation_text: string | null;
-  seed: number;
-}
+export { CARDS_ASSET_PREFIX };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(path, {
-    headers: { "Content-Type": "application/json" },
-    ...init,
-  });
+  const response = await fetch(path, init);
   if (!response.ok) {
     const detail = await response
       .json()
@@ -57,14 +29,23 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+function jsonRequest<T>(path: string, method: string, body?: unknown): Promise<T> {
+  return request<T>(`${API_PREFIX}${path}`, {
+    method,
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  });
+}
+
 export const api = {
-  getSpreads: () => request<Spread[]>("/api/spreads"),
+  getSpreads: () => request<Spread[]>(`${API_PREFIX}/spreads`),
 
   createReading: (spreadId: string, question: string) =>
-    request<StoredReading>("/api/readings", {
-      method: "POST",
-      body: JSON.stringify({ spread_id: spreadId, question }),
-    }),
+    jsonRequest<StoredReading>("/readings", "POST", { spread_id: spreadId, question }),
+
+  getReadings: (limit = 24, offset = 0) =>
+    request<StoredReading[]>(`${API_PREFIX}/readings?limit=${limit}&offset=${offset}`),
+
+  getReading: (id: string) => request<StoredReading>(`${API_PREFIX}/readings/${id}`),
 };
 
 export type StreamEvent =
@@ -78,52 +59,31 @@ export async function streamReading(
   onEvent: (event: StreamEvent) => void,
   signal?: AbortSignal,
 ): Promise<void> {
-  const response = await fetch(`/api/readings/${readingId}/stream`, { signal });
+  const response = await fetch(`${API_PREFIX}/readings/${readingId}/stream`, { signal });
   if (!response.ok || !response.body) {
     throw new Error(`Stream failed (${response.status})`);
   }
 
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-
-    let boundary = buffer.indexOf("\n\n");
-    while (boundary !== -1) {
-      const frame = buffer.slice(0, boundary);
-      buffer = buffer.slice(boundary + 2);
-      dispatchFrame(frame, onEvent);
-      boundary = buffer.indexOf("\n\n");
+  await readSseFrames(response.body, ({ event, data }) => {
+    let payload: Record<string, unknown>;
+    try {
+      payload = JSON.parse(data) as Record<string, unknown>;
+    } catch {
+      return;
     }
-  }
-}
-
-function dispatchFrame(frame: string, onEvent: (event: StreamEvent) => void): void {
-  let event = "";
-  let data = "";
-  for (const line of frame.split("\n")) {
-    if (line.startsWith("event: ")) event = line.slice(7);
-    else if (line.startsWith("data: ")) data += line.slice(6);
-  }
-  if (!event || !data) return;
-
-  const payload = JSON.parse(data);
-  switch (event) {
-    case "start":
-      onEvent({ kind: "start", readingId: payload.reading_id });
-      break;
-    case "token":
-      onEvent({ kind: "token", text: payload.text });
-      break;
-    case "done":
-      onEvent({ kind: "done" });
-      break;
-    case "error":
-      onEvent({ kind: "error", detail: payload.detail });
-      break;
-  }
+    switch (event) {
+      case "start":
+        onEvent({ kind: "start", readingId: String(payload.reading_id ?? "") });
+        break;
+      case "token":
+        if (typeof payload.text === "string") onEvent({ kind: "token", text: payload.text });
+        break;
+      case "done":
+        onEvent({ kind: "done" });
+        break;
+      case "error":
+        onEvent({ kind: "error", detail: String(payload.detail ?? "") });
+        break;
+    }
+  });
 }
