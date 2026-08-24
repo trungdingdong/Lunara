@@ -57,6 +57,16 @@ class ReadingRequest(BaseModel):
     question: str = Field(min_length=3, max_length=500)
 
 
+class DrawRequest(BaseModel):
+    spread_id: str = Field(min_length=1)
+
+
+class DrawResponse(BaseModel):
+    spread_id: str
+    seed: int
+    drawn_cards: list[DrawnCard]
+
+
 class SpreadPosition(BaseModel):
     index: int
     name: str

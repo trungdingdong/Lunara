@@ -21,6 +21,8 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://localhost:11434"
     ollama_model: str = "llama3.2"
 
+    database_url: str = "sqlite+aiosqlite:///./data/app.db"
+
     @model_validator(mode="after")
     def _require_key_for_anthropic(self) -> Settings:
         if self.llm_provider == "anthropic" and not self.anthropic_api_key:

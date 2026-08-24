@@ -8,6 +8,7 @@ from app.llm.provider import (
     LLMProvider,
     MockProvider,
     OllamaProvider,
+    ProviderError,
     build_provider,
 )
 
@@ -78,6 +79,14 @@ def test_build_provider_factory() -> None:
     settings = Settings(llm_provider="mock")
 
     assert isinstance(build_provider(settings), MockProvider)
+
+
+def test_unknown_provider_rejected() -> None:
+    settings = Settings(llm_provider="mock", anthropic_model="")
+    object.__setattr__(settings, "llm_provider", "bogus")
+
+    with pytest.raises(ProviderError):
+        build_provider(settings)
 
 
 def test_settings_require_key_for_anthropic() -> None:

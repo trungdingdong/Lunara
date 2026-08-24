@@ -158,6 +158,18 @@ class OllamaProvider:
             raise ProviderError(f"ollama stream failed: {exc}") from exc
 
 
+def resolve_model_name(settings: Settings) -> str:
+    match settings.llm_provider:
+        case "mock":
+            return "mock"
+        case "anthropic":
+            return settings.anthropic_model
+        case "ollama":
+            return settings.ollama_model
+        case _:
+            raise ProviderError(f"unknown llm provider: {settings.llm_provider}")
+
+
 def build_provider(settings: Settings) -> LLMProvider:
     match settings.llm_provider:
         case "mock":

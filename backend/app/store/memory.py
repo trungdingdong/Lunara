@@ -1,51 +1,44 @@
 from __future__ import annotations
 
-import uuid
-from datetime import UTC, datetime
+import uuid as uuid_module
+from collections.abc import Sequence
 
-from pydantic import BaseModel
-
-from app.models.schemas import DrawnCard, IntentCategory, Spread
-
-
-class StoredReading(BaseModel):
-    id: str
-    spread_id: str
-    spread_name: str
-    question: str
-    intent_category: IntentCategory
-    drawn_cards: list[DrawnCard]
-    seed: int
-    created_at: datetime
+from app.store.base import NewReading, StoredReading
 
 
 class InMemoryReadingStore:
     def __init__(self) -> None:
-        self._readings: dict[str, StoredReading] = {}
+        self._readings: dict[uuid_module.UUID, StoredReading] = {}
 
-    def create(
-        self,
-        spread: Spread,
-        question: str,
-        drawn_cards: list[DrawnCard],
-        intent_category: IntentCategory,
-        seed: int,
-    ) -> StoredReading:
-        reading = StoredReading(
-            id=uuid.uuid4().hex,
-            spread_id=spread.id,
-            spread_name=spread.name,
-            question=question,
-            intent_category=intent_category,
-            drawn_cards=drawn_cards,
-            seed=seed,
-            created_at=datetime.now(UTC),
+    async def create(self, reading: NewReading) -> StoredReading:
+        stored = StoredReading(
+            id=uuid_module.uuid4(),
+            spread_id=reading.spread_id,
+            spread_name=reading.spread_name,
+            question=reading.question,
+            intent_category=reading.intent_category,
+            drawn_cards=reading.drawn_cards,
+            seed=reading.seed,
+            reversal_rate=reading.reversal_rate,
+            provider=reading.provider,
+            model_name=reading.model_name,
+            prompt_version=reading.prompt_version,
         )
-        self._readings[reading.id] = reading
-        return reading
+        self._readings[stored.id] = stored
+        return stored
 
-    def get(self, reading_id: str) -> StoredReading | None:
+    async def get(self, reading_id: uuid_module.UUID) -> StoredReading | None:
         return self._readings.get(reading_id)
 
-    def clear(self) -> None:
+    async def list_readings(self, *, limit: int, offset: int) -> Sequence[StoredReading]:
+        ordered = sorted(self._readings.values(), key=lambda r: r.seed)
+        return list(ordered[offset : offset + limit])
+
+    async def update_interpretation(self, reading_id: uuid_module.UUID, text: str) -> None:
+        stored = self._readings.get(reading_id)
+        if stored is not None:
+            updated = stored.model_copy(update={"interpretation_text": text})
+            self._readings[reading_id] = updated
+
+    async def clear(self) -> None:
         self._readings.clear()

@@ -82,6 +82,18 @@ uv run uvicorn app.main:app --reload
 - API: http://127.0.0.1:8000
 - Interactive docs: http://127.0.0.1:8000/docs
 
+### Run with Docker
+
+```bash
+docker compose up --build
+```
+
+Starts the API plus a PostgreSQL 17 database (migrations apply automatically on boot). The API listens on http://localhost:8000. To use Anthropic instead of the mock provider:
+
+```bash
+TAROT_LLM_PROVIDER=anthropic TAROT_ANTHROPIC_API_KEY=sk-ant-... docker compose up --build
+```
+
 ### Try It
 
 ```bash

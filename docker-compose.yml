@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      TAROT_DATABASE_URL: postgresql+asyncpg://lunara:lunara@db:5432/lunara
+      TAROT_LLM_PROVIDER: ${TAROT_LLM_PROVIDER:-mock}
+      TAROT_ANTHROPIC_API_KEY: ${TAROT_ANTHROPIC_API_KEY:-}
+      TAROT_REVERSAL_RATE: ${TAROT_REVERSAL_RATE:-0.35}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: lunara
+      POSTGRES_PASSWORD: lunara
+      POSTGRES_DB: lunara
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lunara -d lunara"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    restart: unless-stopped
+
+volumes:
+  pgdata:
