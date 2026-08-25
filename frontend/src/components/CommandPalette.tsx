@@ -13,7 +13,8 @@ interface CommandPaletteProps {
 }
 
 const NAV_ITEMS = [
-  { label: "New reading", to: "/" },
+  { label: "Home", to: "/" },
+  { label: "New reading", to: "/reading" },
   { label: "History", to: "/history" },
 ];
 

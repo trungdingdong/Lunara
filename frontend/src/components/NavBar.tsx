@@ -4,7 +4,7 @@ import { Command as CommandIcon, Moon, Sun } from "lucide-react";
 import { useThemeStore } from "@/stores/theme";
 
 const NAV_LINKS = [
-  { to: "/", label: "Reading" },
+  { to: "/reading", label: "Reading" },
   { to: "/history", label: "History" },
 ];
 
@@ -24,7 +24,7 @@ export function NavBar({ onOpenPalette }: { onOpenPalette: () => void }) {
               <NavLink
                 key={link.to}
                 to={link.to}
-                end={link.to === "/"}
+                end={false}
                 className={({ isActive }) =>
                   `rounded-full px-3 py-1.5 font-body text-sm transition-standard ${
                     isActive

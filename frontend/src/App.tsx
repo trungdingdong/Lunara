@@ -7,6 +7,7 @@ import "@/theme/material";
 import { CommandPalette } from "@/components/CommandPalette";
 import { NavBar } from "@/components/NavBar";
 import { HistoryView } from "@/views/HistoryView";
+import LandingView from "@/views/LandingView";
 import { ReadingDetailView } from "@/views/ReadingDetailView";
 import { ReadingView } from "@/views/ReadingView";
 
@@ -22,7 +23,8 @@ export default function App() {
       <div className="min-h-screen">
         <NavBar onOpenPalette={() => setPaletteOpen(true)} />
         <Routes>
-          <Route path="/" element={<ReadingView />} />
+          <Route path="/" element={<LandingView />} />
+          <Route path="/reading" element={<ReadingView />} />
           <Route path="/history" element={<HistoryView />} />
           <Route path="/readings/:id" element={<ReadingDetailView />} />
         </Routes>
