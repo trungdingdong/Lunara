@@ -32,6 +32,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 function jsonRequest<T>(path: string, method: string, body?: unknown): Promise<T> {
   return request<T>(`${API_PREFIX}${path}`, {
     method,
+    headers: { "Content-Type": "application/json" },
     ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
 }
