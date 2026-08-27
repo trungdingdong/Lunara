@@ -1,4 +1,6 @@
 import { readSseFrames } from "@/lib/sse";
+import { ApiError } from "@/lib/errors";
+import { authAwareFetch, getAccessToken } from "@/lib/authClient";
 
 import type { components } from "@/types/api";
 
@@ -18,13 +20,12 @@ const CARDS_ASSET_PREFIX = "/cards/";
 export { CARDS_ASSET_PREFIX };
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(path, init);
+  const response = await authAwareFetch(path, init);
   if (!response.ok) {
-    const detail = await response
-      .json()
-      .then((body) => body.detail)
-      .catch(() => null);
-    throw new Error(typeof detail === "string" ? detail : `Request failed (${response.status})`);
+    const body = await response.json().catch(() => null);
+    const detail = typeof body?.detail === "string" ? body.detail : null;
+    const code = typeof body?.code === "string" ? body.code : null;
+    throw new ApiError(response.status, detail, code);
   }
   return response.json() as Promise<T>;
 }
@@ -60,9 +61,13 @@ export async function streamReading(
   onEvent: (event: StreamEvent) => void,
   signal?: AbortSignal,
 ): Promise<void> {
-  const response = await fetch(`${API_PREFIX}/readings/${readingId}/stream`, { signal });
+  const headers: Record<string, string> = {};
+  const token = getAccessToken();
+  if (token) headers["Authorization"] = `Bearer ${token}`;
+
+  const response = await fetch(`${API_PREFIX}/readings/${readingId}/stream`, { signal, headers });
   if (!response.ok || !response.body) {
-    throw new Error(`Stream failed (${response.status})`);
+    throw new ApiError(response.status, `Stream failed (${response.status})`);
   }
 
   await readSseFrames(response.body, ({ event, data }) => {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export interface PointerState {
   /** normalized -1..1 from viewport center */
@@ -70,7 +70,4 @@ export function usePointerTracking(onMove: (pointer: PointerState) => void): voi
   }, []);
 }
 
-export function useEnvironmentFlags(): EnvironmentFlags {
-  const [flags] = useState<EnvironmentFlags>(computeFlags);
-  return flags;
-}
+

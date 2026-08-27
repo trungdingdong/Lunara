@@ -30,8 +30,8 @@ describe("api transport", () => {
 
     const [, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(init.method).toBe("POST");
-    const headers = init.headers as Record<string, string>;
-    expect(headers["Content-Type"]).toBe("application/json");
+    const headers = new Headers(init.headers);
+    expect(headers.get("Content-Type")).toBe("application/json");
     expect(init.body).toBe(
       JSON.stringify({ spread_id: "three-card", question: "test question" }),
     );

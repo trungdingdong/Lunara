@@ -1,19 +1,17 @@
 ﻿import { useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import "@/theme/material";
+import { ROUTES } from "@/routes";
+import { queryClient } from "@/lib/queryClient";
 import { CommandPalette } from "@/components/CommandPalette";
 import { NavBar } from "@/components/NavBar";
 import { HistoryView } from "@/views/HistoryView";
 import LandingView from "@/views/LandingView";
 import { ReadingDetailView } from "@/views/ReadingDetailView";
 import { ReadingView } from "@/views/ReadingView";
-
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 60_000, retry: 1 } },
-});
 
 export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -23,10 +21,10 @@ export default function App() {
       <div className="min-h-screen">
         <NavBar onOpenPalette={() => setPaletteOpen(true)} />
         <Routes>
-          <Route path="/" element={<LandingView />} />
-          <Route path="/reading" element={<ReadingView />} />
-          <Route path="/history" element={<HistoryView />} />
-          <Route path="/readings/:id" element={<ReadingDetailView />} />
+          <Route path={ROUTES.HOME} element={<LandingView />} />
+          <Route path={ROUTES.READING} element={<ReadingView />} />
+          <Route path={ROUTES.HISTORY} element={<HistoryView />} />
+          <Route path={ROUTES.READING_DETAIL} element={<ReadingDetailView />} />
         </Routes>
         <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
         <Toaster

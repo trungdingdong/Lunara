@@ -5,6 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { api } from "@/lib/api";
+import { NAV_ENTRIES } from "@/routes";
+import { queryKeys } from "@/lib/queryKeys";
 import { useSpreadDraftStore } from "@/stores/spreadDraft";
 
 interface CommandPaletteProps {
@@ -12,17 +14,11 @@ interface CommandPaletteProps {
   onOpenChange: (open: boolean) => void;
 }
 
-const NAV_ITEMS = [
-  { label: "Home", to: "/" },
-  { label: "New reading", to: "/reading" },
-  { label: "History", to: "/history" },
-];
-
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
   const setSpreadId = useSpreadDraftStore((state) => state.setSpreadId);
   const spreadsQuery = useQuery({
-    queryKey: ["spreads"],
+    queryKey: queryKeys.spreads.all,
     queryFn: api.getSpreads,
     enabled: open,
   });
@@ -61,11 +57,11 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         </Command.Empty>
 
         <Command.Group heading="Navigate" className="palette-group">
-          {NAV_ITEMS.map((item) => (
+          {NAV_ENTRIES.map((item) => (
             <Command.Item
-              key={item.to}
+              key={item.path}
               value={`go ${item.label}`}
-              onSelect={() => go(item.to)}
+              onSelect={() => go(item.path)}
               className="palette-item"
             >
               {item.label}

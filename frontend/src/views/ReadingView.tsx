@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import "@/theme/material";
 import { api } from "@/lib/api";
+import { queryKeys } from "@/lib/queryKeys";
 import { useReadingSession } from "@/lib/readingSession";
 import { CardFan } from "@/components/CardFan";
 import { MoonSteps } from "@/components/MoonSteps";
@@ -16,7 +17,7 @@ export function ReadingView() {
   const spreadId = useSpreadDraftStore((state) => state.spreadId);
   const setSpreadId = useSpreadDraftStore((state) => state.setSpreadId);
 
-  const spreadsQuery = useQuery({ queryKey: ["spreads"], queryFn: api.getSpreads });
+  const spreadsQuery = useQuery({ queryKey: queryKeys.spreads.all, queryFn: api.getSpreads });
   const { stage, cards, readingId, interpretation } = session.state;
   const { busy, streaming, failed, canAskAgain } = session.derived;
 

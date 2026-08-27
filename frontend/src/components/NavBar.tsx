@@ -1,11 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { Command as CommandIcon, Moon, Sun } from "lucide-react";
 
+import { ROUTES } from "@/routes";
 import { useThemeStore } from "@/stores/theme";
 
 const NAV_LINKS = [
-  { to: "/reading", label: "Reading" },
-  { to: "/history", label: "History" },
+  { to: ROUTES.READING, label: "Reading" },
+  { to: ROUTES.HISTORY, label: "History" },
 ];
 
 const SHORTCUT_HINT = typeof navigator !== "undefined" && /Mac/.test(navigator.platform) ? "\u2318K" : "Ctrl+K";

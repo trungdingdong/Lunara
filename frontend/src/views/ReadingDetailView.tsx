@@ -5,6 +5,7 @@ import { Copy } from "lucide-react";
 import { toast } from "sonner";
 
 import { api } from "@/lib/api";
+import { queryKeys } from "@/lib/queryKeys";
 import { CardFan } from "@/components/CardFan";
 import { Skeleton } from "@/components/Skeleton";
 import { StreamPane } from "@/components/StreamPane";
@@ -12,7 +13,7 @@ import { StreamPane } from "@/components/StreamPane";
 export function ReadingDetailView() {
   const { id = "" } = useParams();
   const readingQuery = useQuery({
-    queryKey: ["reading", id],
+    queryKey: queryKeys.readings.detail(id),
     queryFn: () => api.getReading(id),
     enabled: id.length > 0,
   });

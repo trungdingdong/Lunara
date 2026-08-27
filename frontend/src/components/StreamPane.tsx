@@ -45,7 +45,7 @@ export function StreamPane({ text, streaming, failed }: StreamPaneProps) {
                 {section.title}
               </h2>
               {isLast && streaming ? (
-                <p className="mt-3 font-body leading-relaxed text-on-surface/85 after:animate-pulse after:content-['â–']">
+                <p className="mt-3 font-body leading-relaxed text-on-surface/85 after:animate-pulse after:content-['▪']">
                   {section.body}
                 </p>
               ) : (

@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 
 import { api } from "@/lib/api";
+import { queryKeys } from "@/lib/queryKeys";
 import { HistoryGridSkeleton } from "@/components/Skeleton";
 import { ReadingCard } from "@/components/ReadingCard";
 
 export function HistoryView() {
   const readingsQuery = useQuery({
-    queryKey: ["readings", 24, 0],
+    queryKey: queryKeys.readings.list(24, 0),
     queryFn: () => api.getReadings(24, 0),
   });
 

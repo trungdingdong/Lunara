@@ -7,6 +7,8 @@
  */
 import { useEffect, useRef, useState } from "react";
 
+import { BASIN_FALLBACK_CLASS } from "@/views/LandingView";
+
 import { environmentFlags } from "./usePointerParallax";
 
 const VERTEX_SHADER = `
@@ -226,12 +228,7 @@ export default function ScryingBasin() {
   }, [reducedMotion]);
 
   if (failed) {
-    return (
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(201,162,39,0.16),transparent),radial-gradient(ellipse_90%_70%_at_50%_110%,rgba(38,33,56,0.9),transparent)]"
-      />
-    );
+    return <div aria-hidden="true" className={BASIN_FALLBACK_CLASS} />;
   }
 
   return (
