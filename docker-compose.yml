@@ -48,18 +48,5 @@ services:
       retries: 12
     restart: unless-stopped
 
-  fronted:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "5173:5173"
-    environment:
-      TAROT_API_URL: ${TAROT_API_URL:-http://localhost:8000}
-    depends_on:
-      api:
-        condition: service_healthy
-    restart: unless-stopped
-
 volumes:
   pgdata:
