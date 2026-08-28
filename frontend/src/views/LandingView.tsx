@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { CARDS_ASSET_PREFIX } from "@/lib/api";
 import { environmentFlags, usePointerTracking, type PointerState } from "@/components/landing/usePointerParallax";
 
-const ScryingBasin = lazy(() => import("@/components/landing/ScryingBasin"));
+const LiquidBasin = lazy(() => import("@/components/landing/LiquidBasin"));
 
 export const BASIN_FALLBACK_CLASS = "absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(50,180,190,0.12),transparent),radial-gradient(ellipse_90%_70%_at_50%_110%,rgba(10,20,40,0.9),transparent)]";
 
@@ -143,7 +143,7 @@ export default function LandingView() {
   return (
     <main className="relative min-h-screen overflow-hidden">
       <Suspense fallback={<BasinFallback />}>
-        <ScryingBasin />
+        <LiquidBasin />
       </Suspense>
 
       <div className={`relative z-10 mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-5 py-20 text-center${exiting ? " animate-fade-out" : ""}`}>
@@ -164,7 +164,7 @@ export default function LandingView() {
         </Reveal>
 
         <Reveal delayIndex={2} className="mt-12 w-full">
-          <div ref={cardsRef} className="mx-auto grid max-w-md grid-cols-3 gap-5">
+          <div ref={cardsRef} data-liquid-dynamic className="mx-auto grid max-w-md grid-cols-3 gap-5">
             <BackCard tilt={tiltRef.current}>
               <div className="aspect-[2/3.4] rounded-lg border border-primary/35 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.15)]" />
             </BackCard>
@@ -199,7 +199,7 @@ export default function LandingView() {
         </Reveal>
 
         <Reveal delayIndex={3} className="mt-14 w-full max-w-xs">
-          <div ref={ctaRef} className="block w-full" style={{ transition: "transform 180ms ease-out" }}>
+          <div ref={ctaRef} data-liquid-dynamic className="block w-full" style={{ transition: "transform 180ms ease-out" }}>
             <button
               type="button"
               onClick={handleBegin}
