@@ -45,7 +45,7 @@ export function ReadingView() {
   const readingKey = cards.map((drawn) => drawn.card.id).join("-");
 
   return (
-    <main className="mx-auto w-full max-w-5xl px-5 pb-24">
+    <main className="animate-route-enter mx-auto w-full max-w-5xl px-5 pb-24">
       <header className="pt-14 pb-10 text-center">
         <p className="font-utility text-[0.65rem] tracking-[0.4em] uppercase text-on-surface-variant">
           Lunara

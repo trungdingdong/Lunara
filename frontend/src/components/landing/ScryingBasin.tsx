@@ -3,7 +3,7 @@
  *
  * Shader derived from React Bits "LiquidChrome" (MIT + Commons Clause,
  * https://reactbits.dev/backgrounds/liquid-chrome), re-tinted to the Lunara
- * palette: indigo ink base, gilt specular, wine shadow.
+ * palette: indigo ink base, aqua specular, deep abyssal shadow.
  */
 import { useEffect, useRef, useState } from "react";
 
@@ -28,8 +28,8 @@ uniform vec2 iClickPos;
 uniform float iClickTime;
 
 const vec3 INK = vec3(0.055, 0.047, 0.114);
-const vec3 GILT = vec3(0.788, 0.635, 0.153);
-const vec3 WINE = vec3(0.220, 0.086, 0.137);
+const vec3 AQUA = vec3(0.22, 0.65, 0.72);
+const vec3 DEEP = vec3(0.04, 0.07, 0.18);
 
 float noise(vec2 p) {
   return smoothstep(-0.5, 0.9, sin((p.x - p.y) * 555.0) * sin(p.y * 1444.0)) - 0.4;
@@ -70,11 +70,11 @@ void main() {
 
   float s = sqrt(silk(uv, t));
 
-  vec3 color = mix(INK, GILT, smoothstep(0.72, 1.06, s));
-  color = mix(WINE, color, smoothstep(0.35, 0.72, s));
+  vec3 color = mix(INK, AQUA, smoothstep(0.72, 1.06, s));
+  color = mix(DEEP, color, smoothstep(0.35, 0.72, s));
 
   float glint = pow(max(s - 0.98, 0.0) * 12.0, 2.0);
-  color += GILT * glint * 0.35;
+  color += AQUA * glint * 0.35;
 
   color = pow(color, vec3(0.52, 0.5, 0.4));
   gl_FragColor = vec4(color, 1.0);

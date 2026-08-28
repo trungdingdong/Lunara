@@ -1,12 +1,12 @@
-﻿import { Suspense, lazy, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+﻿import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { CARDS_ASSET_PREFIX } from "@/lib/api";
 import { environmentFlags, usePointerTracking, type PointerState } from "@/components/landing/usePointerParallax";
 
 const ScryingBasin = lazy(() => import("@/components/landing/ScryingBasin"));
 
-export const BASIN_FALLBACK_CLASS = "absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(201,162,39,0.16),transparent),radial-gradient(ellipse_90%_70%_at_50%_110%,rgba(38,33,56,0.9),transparent)]";
+export const BASIN_FALLBACK_CLASS = "absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(50,180,190,0.12),transparent),radial-gradient(ellipse_90%_70%_at_50%_110%,rgba(10,20,40,0.9),transparent)]";
 
 function BasinFallback() {
   return <div aria-hidden="true" className={BASIN_FALLBACK_CLASS} />;
@@ -76,6 +76,7 @@ const MOON_CARD = {
 };
 
 export default function LandingView() {
+  const navigate = useNavigate();
   const { reducedMotion, touch } = environmentFlags();
   const moonRef = useRef<HTMLHeadingElement | null>(null);
   const ctaRef = useRef<HTMLDivElement | null>(null);
@@ -84,6 +85,13 @@ export default function LandingView() {
   const magnetRef = useRef({ x: 0, y: 0 });
   const cardsRef = useRef<HTMLDivElement | null>(null);
   const pendingRef = useRef(false);
+  const [exiting, setExiting] = useState(false);
+
+  const handleBegin = useCallback(() => {
+    if (exiting) return;
+    setExiting(true);
+    window.setTimeout(() => navigate("/reading"), 400);
+  }, [exiting, navigate]);
 
   usePointerTracking((pointer: PointerState) => {
     if (reducedMotion || touch) return;
@@ -138,7 +146,7 @@ export default function LandingView() {
         <ScryingBasin />
       </Suspense>
 
-      <div className="relative z-10 mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-5 py-20 text-center">
+      <div className={`relative z-10 mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-5 py-20 text-center${exiting ? " animate-fade-out" : ""}`}>
         <Reveal delayIndex={0}>
           <p className="font-utility text-[0.65rem] tracking-[0.45em] uppercase text-on-surface-variant">
             ✦ the cards already know ✦
@@ -158,13 +166,13 @@ export default function LandingView() {
         <Reveal delayIndex={2} className="mt-12 w-full">
           <div ref={cardsRef} className="mx-auto grid max-w-md grid-cols-3 gap-5">
             <BackCard tilt={tiltRef.current}>
-              <div className="aspect-[2/3.4] rounded-lg border border-primary/35 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(168,137,74,0.18)]" />
+              <div className="aspect-[2/3.4] rounded-lg border border-primary/35 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.15)]" />
             </BackCard>
 
             <BackCard tilt={{ x: tiltRef.current.x * 1.4, y: tiltRef.current.y * 1.4 }}>
               <div className="card-scene">
                 <div className="card-inner group relative aspect-[2/3.4] rounded-lg">
-                  <div className="card-face absolute inset-0 flex items-center justify-center rounded-lg border border-primary/45 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(168,137,74,0.22)] group-hover:[transform:rotateY(180deg)]">
+                  <div className="card-face absolute inset-0 flex items-center justify-center rounded-lg border border-primary/45 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.18)] group-hover:[transform:rotateY(180deg)]">
                     <span className="font-display text-3xl text-primary/70 transition-opacity duration-300 group-hover:opacity-0">
                       &#x263D;
                     </span>
@@ -185,21 +193,22 @@ export default function LandingView() {
             </BackCard>
 
             <BackCard tilt={{ x: tiltRef.current.x * 0.6, y: tiltRef.current.y * 0.6 }}>
-              <div className="aspect-[2/3.4] rounded-lg border border-primary/35 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(168,137,74,0.18)]" />
+              <div className="aspect-[2/3.4] rounded-lg border border-primary/35 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.15)]" />
             </BackCard>
           </div>
         </Reveal>
 
         <Reveal delayIndex={3} className="mt-14 w-full max-w-xs">
           <div ref={ctaRef} className="block w-full" style={{ transition: "transform 180ms ease-out" }}>
-            <Link
-              to="/reading"
+            <button
+              type="button"
+              onClick={handleBegin}
               className="block w-full"
             >
               <md-filled-button class="w-full">
                 Begin your reading
               </md-filled-button>
-            </Link>
+            </button>
           </div>
         </Reveal>
 

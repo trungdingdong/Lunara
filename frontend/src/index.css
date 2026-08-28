@@ -2,10 +2,10 @@
 
 :root {
   /* Material Design 3 color roles — Lunara dark scheme */
-  --md-sys-color-primary: #c9a227;
-  --md-sys-color-on-primary: #0e0c1d;
-  --md-sys-color-primary-container: #33290e;
-  --md-sys-color-on-primary-container: #e9ce7a;
+  --md-sys-color-primary: #2aafbf;
+  --md-sys-color-on-primary: #0a1a1d;
+  --md-sys-color-primary-container: #0d3338;
+  --md-sys-color-on-primary-container: #a0e8f0;
   --md-sys-color-secondary: #8b86a8;
   --md-sys-color-on-secondary: #14121f;
   --md-sys-color-secondary-container: #262138;
@@ -51,10 +51,10 @@
 }
 
 @theme {
-  --color-primary: #c9a227;
-  --color-on-primary: #0e0c1d;
-  --color-primary-container: #33290e;
-  --color-on-primary-container: #e9ce7a;
+  --color-primary: #2aafbf;
+  --color-on-primary: #0a1a1d;
+  --color-primary-container: #0d3338;
+  --color-on-primary-container: #a0e8f0;
   --color-secondary: #8b86a8;
   --color-secondary-container: #262138;
   --color-on-secondary-container: #cdc7e6;
@@ -97,10 +97,10 @@ html {
 }
 
 :root[data-theme="light"] {
-  --md-sys-color-primary: #7a5f10;
-  --md-sys-color-on-primary: #fff8e7;
-  --md-sys-color-primary-container: #efe3b8;
-  --md-sys-color-on-primary-container: #2a2105;
+  --md-sys-color-primary: #1a7a87;
+  --md-sys-color-on-primary: #e0f7fa;
+  --md-sys-color-primary-container: #b2ebf2;
+  --md-sys-color-on-primary-container: #00363f;
   --md-sys-color-secondary: #5c5878;
   --md-sys-color-on-secondary: #ffffff;
   --md-sys-color-secondary-container: #e4e0f2;
@@ -220,5 +220,30 @@ body {
     transition-property: color, background-color, border-color, opacity, transform;
     transition-duration: 180ms;
     transition-timing-function: ease-out;
+  }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes route-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-out {
+  animation: fade-out 400ms ease-in both;
+}
+
+.animate-route-enter {
+  animation: route-enter 500ms ease-out 80ms both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-out,
+  .animate-route-enter {
+    animation: none;
   }
 }
