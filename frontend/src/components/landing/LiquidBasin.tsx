@@ -1,15 +1,17 @@
 /**
- * The Liquid Basin — full-viewport liquidGL glassmorphism overlay.
+ * @deprecated Superseded by `GalaxyBackdrop` (001-galaxy-landing-background).
+ * Kept in tree for backwards compatibility; the landing page no longer renders
+ * this component. Removal is a separate cleanup task (including the `liquid-gl`
+ * dependency). Do not use in new code.
  *
- * Replaces the custom WebGL ScryingBasin with the liquidGL library.
- * Creates a transparent glass pane that refracts page content behind it,
- * with cursor-reactive tilt and specular highlights.
+ * The Liquid Basin — full-viewport liquidGL glassmorphism overlay.
  */
 import { useLayoutEffect, useRef } from "react";
 import liquidGL from "liquid-gl";
 
-import { BASIN_FALLBACK_CLASS } from "@/views/LandingView";
 import { environmentFlags } from "./usePointerParallax";
+
+const BASIN_FALLBACK_CLASS = "absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(50,180,190,0.12),transparent),radial-gradient(ellipse_90%_70%_at_50%_110%,rgba(10,20,40,0.9),transparent)]";
 
 const TARGET_SELECTOR = ".liquid-basin";
 

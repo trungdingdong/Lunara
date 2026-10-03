@@ -1,16 +1,9 @@
-﻿import { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
+﻿import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { CARDS_ASSET_PREFIX } from "@/lib/api";
+import GalaxyBackdrop from "@/components/landing/GalaxyBackdrop";
 import { environmentFlags, usePointerTracking, type PointerState } from "@/components/landing/usePointerParallax";
-
-const LiquidBasin = lazy(() => import("@/components/landing/LiquidBasin"));
-
-export const BASIN_FALLBACK_CLASS = "absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_38%,rgba(50,180,190,0.12),transparent),radial-gradient(ellipse_90%_70%_at_50%_110%,rgba(10,20,40,0.9),transparent)]";
-
-function BasinFallback() {
-  return <div aria-hidden="true" className={BASIN_FALLBACK_CLASS} />;
-}
 
 const REVEAL_OFFSETS_MS = [0, 90, 180, 270, 360];
 
@@ -142,9 +135,8 @@ export default function LandingView() {
 
   return (
     <main className="relative min-h-screen overflow-hidden">
-      <Suspense fallback={<BasinFallback />}>
-        <LiquidBasin />
-      </Suspense>
+      <GalaxyBackdrop />
+      <div aria-hidden="true" className="landing-scrim pointer-events-none absolute inset-0 z-[5]" />
 
       <div className={`relative z-10 mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-5 py-20 text-center${exiting ? " animate-fade-out" : ""}`}>
         <Reveal delayIndex={0}>
