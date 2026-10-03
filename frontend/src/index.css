@@ -56,26 +56,26 @@
      body → prose, controls, prose-like UI;
      utility → micro-labels, badges, timestamps, metadata.
      No other font families allowed in views/components. */
-  --color-primary: #2aafbf;
-  --color-on-primary: #0a1a1d;
-  --color-primary-container: #0d3338;
-  --color-on-primary-container: #a0e8f0;
-  --color-secondary: #8b86a8;
-  --color-secondary-container: #262138;
-  --color-on-secondary-container: #cdc7e6;
-  --color-tertiary: #d97a93;
-  --color-background: #0e0c1d;
-  --color-on-background: #e8e3f4;
-  --color-surface: #0e0c1d;
-  --color-surface-low: #171430;
-  --color-surface-container: #1b1836;
-  --color-surface-high: #262243;
-  --color-surface-highest: #312e50;
-  --color-on-surface: #e8e3f4;
-  --color-on-surface-variant: #8b86a8;
-  --color-outline: #57517a;
-  --color-outline-variant: #2c2748;
-  --color-error: #ffb4ab;
+  --color-primary: var(--md-sys-color-primary);
+  --color-on-primary: var(--md-sys-color-on-primary);
+  --color-primary-container: var(--md-sys-color-primary-container);
+  --color-on-primary-container: var(--md-sys-color-on-primary-container);
+  --color-secondary: var(--md-sys-color-secondary);
+  --color-secondary-container: var(--md-sys-color-secondary-container);
+  --color-on-secondary-container: var(--md-sys-color-on-secondary-container);
+  --color-tertiary: var(--md-sys-color-tertiary);
+  --color-background: var(--md-sys-color-background);
+  --color-on-background: var(--md-sys-color-on-background);
+  --color-surface: var(--md-sys-color-surface);
+  --color-surface-low: var(--md-sys-color-surface-container-low);
+  --color-surface-container: var(--md-sys-color-surface-container);
+  --color-surface-high: var(--md-sys-color-surface-container-high);
+  --color-surface-highest: var(--md-sys-color-surface-container-highest);
+  --color-on-surface: var(--md-sys-color-on-surface);
+  --color-on-surface-variant: var(--md-sys-color-on-surface-variant);
+  --color-outline: var(--md-sys-color-outline);
+  --color-outline-variant: var(--md-sys-color-outline-variant);
+  --color-error: var(--md-sys-color-error);
 
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-body: "Albert Sans", system-ui, sans-serif;
@@ -275,6 +275,121 @@ body {
   }
   .trio-focusable:focus-visible {
     outline-width: 3px;
+  }
+}
+
+/* Celestial theme transition (003-light-theme-transition).
+   Woodcut sun/moon orbit over geocentric rings; sustain-spin while mounted. */
+
+.celestial-veil {
+  background: radial-gradient(ellipse 90% 70% at 50% 110%, rgba(5, 5, 16, 0.96), rgba(5, 5, 16, 0.88));
+}
+
+.veil-to-light .celestial-veil {
+  background: radial-gradient(ellipse 90% 70% at 50% 110%, rgba(246, 241, 231, 0.96), rgba(246, 241, 231, 0.88));
+}
+
+.veil-nightday {
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 40%, rgba(42, 175, 191, 0.22), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 70% 60%, rgba(217, 122, 147, 0.14), transparent 70%);
+  filter: blur(6px);
+  animation: veil-nightday 1.2s ease-in-out infinite alternate;
+}
+
+.veil-rings {
+  background:
+    radial-gradient(circle at 50% 50%, transparent 19%, rgba(232, 227, 244, 0.28) 20%, transparent 21%),
+    radial-gradient(circle at 50% 50%, transparent 32%, rgba(232, 227, 244, 0.2) 33%, transparent 34%),
+    radial-gradient(circle at 50% 50%, transparent 45%, rgba(232, 227, 244, 0.14) 46%, transparent 47%);
+}
+
+.veil-orbit {
+  animation: veil-orbit 1.2s linear infinite;
+}
+
+.veil-to-dark .veil-orbit {
+  animation-direction: reverse;
+}
+
+.veil-sun,
+.veil-moon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(22vmin, 180px);
+  height: min(22vmin, 180px);
+}
+
+.veil-sun {
+  transform: translate(-50%, -130%);
+}
+
+.veil-moon {
+  transform: translate(-50%, 30%) rotate(180deg);
+}
+
+.veil-startrail {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34vmin;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgba(232, 227, 244, 0.8), transparent);
+  filter: blur(1px);
+  animation: veil-trail 0.9s linear infinite;
+}
+
+.veil-startrail-1 {
+  animation-delay: -0.3s;
+  opacity: 0.7;
+}
+
+.veil-startrail-2 {
+  animation-delay: -0.6s;
+  opacity: 0.45;
+}
+
+@keyframes veil-orbit {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes veil-nightday {
+  from {
+    opacity: 0.65;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes veil-trail {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg) translateX(17vmin);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.9;
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(90deg) translateX(17vmin);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celestial-veil,
+  .veil-nightday,
+  .veil-rings,
+  .veil-orbit,
+  .veil-startrail {
+    animation: none;
   }
 }
 

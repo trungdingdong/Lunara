@@ -1,8 +1,17 @@
+import { useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { Command as CommandIcon, Moon, Sun } from "lucide-react";
 
 import { ROUTES } from "@/routes";
 import { useThemeStore } from "@/stores/theme";
+import { environmentFlags } from "@/components/landing/usePointerParallax";
+import CelestialTransition from "@/components/theme/CelestialTransition";
+import {
+  IDLE_MS,
+  SINGLE_SWEEP_MS,
+  applyThemeAtMidpoint,
+  type TransitionDirection,
+} from "@/components/theme/transitionPolicy";
 
 const NAV_LINKS = [
   { to: ROUTES.READING, label: "Reading" },
@@ -13,7 +22,28 @@ const SHORTCUT_HINT = typeof navigator !== "undefined" && /Mac/.test(navigator.p
 
 export function NavBar({ onOpenPalette }: { onOpenPalette: () => void }) {
   const theme = useThemeStore((state) => state.theme);
-  const toggleTheme = useThemeStore((state) => state.toggleTheme);
+  const setTheme = useThemeStore((state) => state.setTheme);
+  const [veil, setVeil] = useState<TransitionDirection | null>(null);
+  const runRef = useRef(0);
+  const pendingRef = useRef(theme);
+
+  const handleThemeToggle = (): void => {
+    const next = pendingRef.current === "dark" ? "light" : "dark";
+    pendingRef.current = next;
+    if (environmentFlags().reducedMotion) {
+      setTheme(next);
+      return;
+    }
+    const run = runRef.current + 1;
+    runRef.current = run;
+    setVeil(next === "light" ? "to-light" : "to-dark");
+    window.setTimeout(() => {
+      applyThemeAtMidpoint(run, runRef.current, () => setTheme(next));
+    }, SINGLE_SWEEP_MS / 2);
+    window.setTimeout(() => {
+      if (run === runRef.current) setVeil(null);
+    }, SINGLE_SWEEP_MS / 2 + IDLE_MS);
+  };
 
   return (
     <nav className="sticky top-0 z-40 border-b border-outline-variant/60 bg-background/70 backdrop-blur-md">
@@ -53,7 +83,7 @@ export function NavBar({ onOpenPalette }: { onOpenPalette: () => void }) {
 
           <button
             type="button"
-            onClick={toggleTheme}
+            onClick={handleThemeToggle}
             aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
             className="rounded-full p-2 text-on-surface-variant transition-standard hover:bg-surface-high hover:text-on-surface"
           >
@@ -61,6 +91,7 @@ export function NavBar({ onOpenPalette }: { onOpenPalette: () => void }) {
           </button>
         </div>
       </div>
+      {veil !== null && <CelestialTransition direction={veil} />}
     </nav>
   );
 }

@@ -23,6 +23,7 @@ export const useThemeStore = create<ThemeState>()(
         applyToDocument(theme);
         set({ theme });
       },
+      /** @deprecated Prefer setTheme with an explicit target; kept for compatibility. */
       toggleTheme: () => get().setTheme(get().theme === "dark" ? "light" : "dark"),
     }),
     {

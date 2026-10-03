@@ -15,3 +15,6 @@ htmlcov/
 .DS_Store
 backend/data/raw/
 *.db
+# Local agent tooling (per-user CLI scaffolding, never committed)
+.opencode/
+.specify/

@@ -40,7 +40,7 @@ function TarotCardInner({ drawn, flipped }: TarotCardProps) {
                 className="absolute inset-0 h-full w-full object-cover"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent px-2 pt-8 pb-2.5">
-                <h3 className="font-display text-lg leading-tight font-semibold italic text-on-background">
+                <h3 className="font-display text-lg leading-tight font-semibold italic text-white">
                   {card.name}
                 </h3>
               </div>
