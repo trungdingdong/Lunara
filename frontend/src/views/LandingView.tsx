@@ -48,10 +48,13 @@ function Reveal({
   );
 }
 
-function BackCard({ tilt, children }: { tilt: { x: number; y: number }; children: React.ReactNode }) {
+function BackCard({ tilt, label, children }: { tilt: { x: number; y: number }; label: string; children: React.ReactNode }) {
   return (
     <div
-      className="card-scene w-full max-w-44"
+      className="card-scene group trio-focusable w-full max-w-44"
+      tabIndex={0}
+      role="img"
+      aria-label={label}
       style={{
         transform: `perspective(900px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg)`,
         transition: "transform 180ms ease-out",
@@ -157,15 +160,15 @@ export default function LandingView() {
 
         <Reveal delayIndex={2} className="mt-12 w-full">
           <div ref={cardsRef} data-liquid-dynamic className="mx-auto grid max-w-md grid-cols-3 gap-5">
-            <BackCard tilt={tiltRef.current}>
-              <div className="aspect-[2/3.4] rounded-lg border border-primary/35 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.15)]" />
+            <BackCard tilt={tiltRef.current} label="Card back design">
+              <div className="trio-lift aspect-[2/3.4] rounded-lg border border-primary/35 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.15)] transition-all duration-700 group-hover:-translate-y-1 group-hover:border-primary/70 group-hover:shadow-[inset_0_0_30px_rgba(60,170,180,0.15),0_0_24px_rgba(42,175,191,0.35)] group-focus-visible:-translate-y-1 group-focus-visible:border-primary/70 group-focus-visible:shadow-[inset_0_0_30px_rgba(60,170,180,0.15),0_0_24px_rgba(42,175,191,0.35)]" />
             </BackCard>
 
-            <BackCard tilt={{ x: tiltRef.current.x * 1.4, y: tiltRef.current.y * 1.4 }}>
+            <BackCard tilt={{ x: tiltRef.current.x * 1.4, y: tiltRef.current.y * 1.4 }} label="The Moon card preview">
               <div className="card-scene">
-                <div className="card-inner group relative aspect-[2/3.4] rounded-lg">
-                  <div className="card-face absolute inset-0 flex items-center justify-center rounded-lg border border-primary/45 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.18)] group-hover:[transform:rotateY(180deg)]">
-                    <span className="font-display text-3xl text-primary/70 transition-opacity duration-300 group-hover:opacity-0">
+                <div className="card-inner trio-flip relative aspect-[2/3.4] rounded-lg group-hover:[transform:rotateY(180deg)] group-focus-visible:[transform:rotateY(180deg)]">
+                  <div className="card-face absolute inset-0 flex items-center justify-center rounded-lg border border-primary/45 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.18)]">
+                    <span className="font-display text-3xl text-primary/70">
                       &#x263D;
                     </span>
                   </div>
@@ -184,8 +187,8 @@ export default function LandingView() {
               </div>
             </BackCard>
 
-            <BackCard tilt={{ x: tiltRef.current.x * 0.6, y: tiltRef.current.y * 0.6 }}>
-              <div className="aspect-[2/3.4] rounded-lg border border-primary/35 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.15)]" />
+            <BackCard tilt={{ x: tiltRef.current.x * 0.6, y: tiltRef.current.y * 0.6 }} label="Card back design">
+              <div className="trio-lift aspect-[2/3.4] rounded-lg border border-primary/35 bg-gradient-to-br from-surface-low to-background shadow-[inset_0_0_30px_rgba(60,170,180,0.15)] transition-all duration-700 group-hover:-translate-y-1 group-hover:border-primary/70 group-hover:shadow-[inset_0_0_30px_rgba(60,170,180,0.15),0_0_24px_rgba(42,175,191,0.35)] group-focus-visible:-translate-y-1 group-focus-visible:border-primary/70 group-focus-visible:shadow-[inset_0_0_30px_rgba(60,170,180,0.15),0_0_24px_rgba(42,175,191,0.35)]" />
             </BackCard>
           </div>
         </Reveal>
