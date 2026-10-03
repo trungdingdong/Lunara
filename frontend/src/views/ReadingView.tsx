@@ -42,8 +42,6 @@ export function ReadingView() {
   const spreadName =
     spreadsQuery.data?.find((spread) => spread.id === spreadId)?.name ?? spreadId;
 
-  const readingKey = cards.map((drawn) => drawn.card.id).join("-");
-
   return (
     <main className="animate-route-enter mx-auto w-full max-w-5xl px-5 pb-24">
       <header className="pt-14 pb-10 text-center">
@@ -87,27 +85,25 @@ export function ReadingView() {
             </md-filled-button>
           </div>
         </section>
-      ) : stage === "creating" ? (
-        <section aria-label="Shuffling the deck">
-          <CeremonyFan cards={[]} shuffling onAllRevealed={() => {}} />
-        </section>
-      ) : readingId ? (
+      ) : (
         <section aria-label="Your reading">
-          <blockquote className="mx-auto mb-12 max-w-2xl text-center">
-            <p className="font-display text-xl italic text-on-surface">&ldquo;{trimmed}&rdquo;</p>
-            <p className="mt-2 font-utility text-[0.6rem] tracking-[0.3em] uppercase text-on-surface-variant">
-              {spreadName}
-            </p>
-          </blockquote>
+          {readingId ? (
+            <blockquote className="mx-auto mb-12 max-w-2xl text-center">
+              <p className="font-display text-xl italic text-on-surface">&ldquo;{trimmed}&rdquo;</p>
+              <p className="mt-2 font-utility text-[0.6rem] tracking-[0.3em] uppercase text-on-surface-variant">
+                {spreadName}
+              </p>
+            </blockquote>
+          ) : null}
 
           <CeremonyFan
-            key={readingKey}
+            key={`${spreadId}-${trimmed}`}
             cards={cards}
-            shuffling={false}
             revealAll={stage === "reading" || stage === "failed"}
             onAllRevealed={session.beginStreaming}
           />
 
+          {readingId ? (
           <div className="mx-auto max-w-2xl">
             <StreamPane text={interpretation} streaming={streaming} failed={failed} />
 
@@ -119,8 +115,9 @@ export function ReadingView() {
               </div>
             )}
           </div>
+          ) : null}
         </section>
-      ) : null}
+      )}
     </main>
   );
 }

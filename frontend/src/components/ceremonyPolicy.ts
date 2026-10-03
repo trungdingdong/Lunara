@@ -21,3 +21,25 @@ export function nextPick(state: CeremonyPickState, index: number): CeremonyPickS
 export function remainingPicks(state: CeremonyPickState): number {
   return Math.max(0, state.total - state.revealed.length);
 }
+
+/** Timed shuffle performance window (nominal 8s, 7–9s tolerance). */
+export const SHUFFLE_MS = 8000;
+
+export interface ShufflePerformance {
+  durationMs: number;
+  elapsedMs: number;
+  cardsArrived: boolean;
+  failed: boolean;
+  done: boolean;
+  aborted: boolean;
+}
+
+/**
+ * Advance the performance clock. Finishes only when the window elapsed AND
+ * cards arrived; failure aborts (caller unmounts to the error path).
+ */
+export function nextPerformance(state: Omit<ShufflePerformance, "done" | "aborted">, elapsedMs: number): ShufflePerformance {
+  if (state.failed) return { ...state, elapsedMs, done: false, aborted: true };
+  const done = elapsedMs >= state.durationMs && state.cardsArrived;
+  return { ...state, elapsedMs, done, aborted: false };
+}
