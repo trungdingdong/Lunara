@@ -304,41 +304,38 @@ body {
     radial-gradient(circle at 50% 50%, transparent 45%, rgba(232, 227, 244, 0.14) 46%, transparent 47%);
 }
 
-.veil-orbit {
-  animation: veil-orbit 1.2s linear infinite;
-}
+/* Celestial theme transition (003 + restaged 004-celestial-emblem).
+   Incoming body rises bottom edge → top-left slot; outgoing exits upward.
+   Arrival slot matches the hero emblem (left-5 top-6). */
 
-.veil-to-dark .veil-orbit {
-  animation-direction: reverse;
-}
-
-.veil-sun,
-.veil-moon {
+.veil-incoming,
+.veil-outgoing {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(22vmin, 180px);
-  height: min(22vmin, 180px);
+  top: 0;
+  left: 0;
+  width: min(20vmin, 150px);
+  height: min(20vmin, 150px);
+  color: #e8e3f4;
 }
 
-.veil-sun {
-  transform: translate(-50%, -130%);
+.veil-incoming {
+  animation: veil-rise 1.2s cubic-bezier(0.3, 0.9, 0.3, 1) infinite;
 }
 
-.veil-moon {
-  transform: translate(-50%, 30%) rotate(180deg);
+.veil-outgoing {
+  animation: veil-exit 1.2s cubic-bezier(0.3, 0.9, 0.3, 1) infinite;
 }
 
 .veil-startrail {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 34vmin;
+  top: 60%;
+  left: 8%;
+  width: 30vmin;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, transparent, rgba(232, 227, 244, 0.8), transparent);
+  background: linear-gradient(0deg, transparent, rgba(232, 227, 244, 0.8), transparent);
   filter: blur(1px);
-  animation: veil-trail 0.9s linear infinite;
+  animation: veil-risetrail 0.9s linear infinite;
 }
 
 .veil-startrail-1 {
@@ -351,34 +348,41 @@ body {
   opacity: 0.45;
 }
 
-@keyframes veil-orbit {
+@keyframes veil-rise {
   from {
-    transform: rotate(0deg);
+    transform: translate(8vw, 105vh) scale(0.6);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
   }
   to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes veil-nightday {
-  from {
-    opacity: 0.65;
-  }
-  to {
+    transform: translate(1.25rem, 1.5rem) scale(1);
     opacity: 1;
   }
 }
 
-@keyframes veil-trail {
+@keyframes veil-exit {
   from {
-    transform: translate(-50%, -50%) rotate(0deg) translateX(17vmin);
+    transform: translate(1.25rem, 1.5rem) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translate(1.25rem, -30vh) scale(0.8);
+    opacity: 0;
+  }
+}
+
+@keyframes veil-risetrail {
+  from {
+    transform: translateY(30vh);
     opacity: 0;
   }
   30% {
     opacity: 0.9;
   }
   to {
-    transform: translate(-50%, -50%) rotate(90deg) translateX(17vmin);
+    transform: translateY(-30vh);
     opacity: 0;
   }
 }
@@ -387,7 +391,8 @@ body {
   .celestial-veil,
   .veil-nightday,
   .veil-rings,
-  .veil-orbit,
+  .veil-incoming,
+  .veil-outgoing,
   .veil-startrail {
     animation: none;
   }

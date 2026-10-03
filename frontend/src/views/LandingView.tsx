@@ -2,7 +2,9 @@
 import { useNavigate } from "react-router-dom";
 
 import { CARDS_ASSET_PREFIX } from "@/lib/api";
+import { useThemeStore } from "@/stores/theme";
 import GalaxyBackdrop from "@/components/landing/GalaxyBackdrop";
+import { WoodcutMoon, WoodcutSun } from "@/components/theme/CelestialTransition";
 import { environmentFlags, usePointerTracking, type PointerState } from "@/components/landing/usePointerParallax";
 
 const REVEAL_OFFSETS_MS = [0, 90, 180, 270, 360];
@@ -73,6 +75,7 @@ const MOON_CARD = {
 
 export default function LandingView() {
   const navigate = useNavigate();
+  const theme = useThemeStore((state) => state.theme);
   const { reducedMotion, touch } = environmentFlags();
   const moonRef = useRef<HTMLHeadingElement | null>(null);
   const ctaRef = useRef<HTMLDivElement | null>(null);
@@ -140,6 +143,11 @@ export default function LandingView() {
     <main className="relative min-h-screen overflow-hidden">
       <GalaxyBackdrop />
       <div aria-hidden="true" className="landing-scrim pointer-events-none absolute inset-0 z-[5]" />
+      <div aria-hidden="true" className="absolute top-6 left-5 z-10 text-primary">
+        <svg viewBox="-60 -60 120 120" className="h-14 w-14">
+          {theme === "dark" ? <WoodcutMoon /> : <WoodcutSun />}
+        </svg>
+      </div>
 
       <div className={`relative z-10 mx-auto flex min-h-screen w-full max-w-5xl flex-col items-center justify-center px-5 py-20 text-center${exiting ? " animate-fade-out" : ""}`}>
         <Reveal delayIndex={0}>

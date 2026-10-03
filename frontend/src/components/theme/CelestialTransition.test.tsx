@@ -23,7 +23,55 @@ describe("Theme dark baseline", () => {
   });
 });
 
-/** T009 [US2]: overlay choreography contract. */
+/** T007 [US2]: persistent hero emblem per mode. */
+describe("Hero emblem", () => {
+  it("shows moon for dark and sun for light, still, top-left", () => {
+    const view = readFileSync(join(SRC, "views/LandingView.tsx"), "utf8");
+    expect(view).toMatch(/WoodcutMoon/);
+    expect(view).toMatch(/WoodcutSun/);
+    expect(view).toMatch(/theme === "dark" \? <WoodcutMoon \/> : <WoodcutSun \/>/);
+    expect(view).toMatch(/absolute top-6 left-5/);
+  });
+});
+
+/** T008 [US2]: rise choreography contract. */
+describe("Rise choreography", () => {
+  it("incoming rises bottom → slot, outgoing exits, trails follow, arrival applies", () => {
+    const comp = readFileSync(join(SRC, "components/theme/CelestialTransition.tsx"), "utf8");
+    expect(comp).toContain("veil-incoming");
+    expect(comp).toContain("veil-outgoing");
+    expect(comp).toContain("createPortal");
+    expect(CSS).toContain("@keyframes veil-rise");
+    expect(CSS).toContain("@keyframes veil-exit");
+    const nav = readFileSync(join(SRC, "components/NavBar.tsx"), "utf8");
+    expect(nav).toContain("applyThemeAtMidpoint");
+  });
+});
+describe("Veil portal mount", () => {
+  it("renders outside <nav> into document.body", () => {
+    const comp = readFileSync(join(SRC, "components/theme/CelestialTransition.tsx"), "utf8");
+    expect(comp).toMatch(/createPortal/);
+    expect(comp).toMatch(/document\.body/);
+    const nav = readFileSync(join(SRC, "components/NavBar.tsx"), "utf8");
+    expect(nav).not.toMatch(/celestial-veil|veil-orbit|veil-sun|veil-moon/);
+    expect(nav).toMatch(/CelestialTransition/);
+  });
+});
+
+/** T003 (004): containment characterization — 003 behaviors that must NOT change. */
+describe("Transition baseline lock-in", () => {
+  it("keeps woodcut bodies, policy buds, store key, and token indirection", () => {
+    const comp = readFileSync(join(SRC, "components/theme/CelestialTransition.tsx"), "utf8");
+    expect(comp).toContain("WoodcutSun");
+    expect(comp).toContain("WoodcutMoon");
+    const policy = readFileSync(join(SRC, "components/theme/transitionPolicy.ts"), "utf8");
+    expect(policy).toContain("IDLE_MS = 700");
+    expect(policy).toContain("SINGLE_SWEEP_MS = 1200");
+    expect(policy).toContain("applyThemeAtMidpoint");
+    expect(STORE).toContain('"lunara.theme.v1"');
+    expect(CSS).toContain("--color-on-surface: var(--md-sys-color-on-surface);");
+  });
+});
 describe("CelestialTransition overlay", () => {
   const COMP = readFileSync(join(SRC, "components/theme/CelestialTransition.tsx"), "utf8");
 

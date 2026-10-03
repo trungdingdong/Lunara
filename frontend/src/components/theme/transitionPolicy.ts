@@ -8,6 +8,11 @@ import type { ThemeName } from "@/stores/theme";
 export const IDLE_MS = 700;
 export const SINGLE_SWEEP_MS = 1200;
 
+/** Rise staging: newcomer enters from here… */
+export const INCOMING_FROM = "bottom" as const;
+/** …and the outgoing body leaves this way. */
+export const OUTGOING_TO = "top-exit" as const;
+
 export type TransitionDirection = "to-light" | "to-dark";
 
 export interface TransitionState {

@@ -1,16 +1,19 @@
 /**
- * CelestialTransition — full-screen theme-change overlay (003).
+ * CelestialTransition — full-screen theme-change overlay (003, restaged 004).
  *
- * Medieval Woodcut style sun + moon (inline SVG, no assets) orbiting each
- * other over a geocentric-ring backdrop. aria-hidden, pointer-events-none,
- * zero focusables; the parent unmounts it on settle. Rapid toggles sustain
- * the spin (same mounted instance, retargeted direction); stale timers
- * no-op via run guards.
+ * Portal-mounted to document.body so no ancestor filter/blur can contain it
+ * (the 003 in-nav mount was trapped by the navbar backdrop blur).
+ * Medieval Woodcut style sun + moon (inline SVG, no assets). aria-hidden,
+ * pointer-events-none, zero focusables; the parent unmounts it on settle.
+ * Rapid toggles sustain the spin (same mounted instance, retargeted
+ * direction); stale timers no-op via run guards.
  */
+import { createPortal } from "react-dom";
+
 import type { TransitionDirection } from "./transitionPolicy";
 import { VEIL_ROOT_CLASS } from "./transitionPolicy";
 
-function WoodcutSun() {
+export function WoodcutSun() {
   const rays = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
   return (
     <g stroke="currentColor" fill="none" strokeWidth="2.5" strokeLinecap="round">
@@ -35,7 +38,7 @@ function WoodcutSun() {
   );
 }
 
-function WoodcutMoon() {
+export function WoodcutMoon() {
   return (
     <g stroke="currentColor" fill="none" strokeWidth="2.5" strokeLinecap="round">
       <path d="M14 -24 A28 28 0 1 0 14 24 A22 22 0 1 1 14 -24 Z" strokeWidth="3" />
@@ -47,29 +50,22 @@ function WoodcutMoon() {
 
 export default function CelestialTransition({ direction }: { direction: TransitionDirection }) {
   const toLight = direction === "to-light";
-  return (
+  const Incoming = toLight ? WoodcutSun : WoodcutMoon;
+  const Outgoing = toLight ? WoodcutMoon : WoodcutSun;
+  return createPortal(
     <div aria-hidden="true" className={`${VEIL_ROOT_CLASS} veil-${direction}`}>
       <div aria-hidden="true" className="veil-nightday absolute inset-0" />
       <div aria-hidden="true" className="veil-rings absolute inset-0" />
       {[0, 1, 2].map((i) => (
         <span key={i} aria-hidden="true" className={`veil-startrail veil-startrail-${i}`} />
       ))}
-      <div aria-hidden="true" className="veil-orbit absolute inset-0">
-        <svg
-          aria-hidden="true"
-          viewBox="-60 -60 120 120"
-          className={`veil-sun ${toLight ? "text-amber-200" : "text-indigo-200"}`}
-        >
-          <WoodcutSun />
-        </svg>
-        <svg
-          aria-hidden="true"
-          viewBox="-60 -60 120 120"
-          className={`veil-moon ${toLight ? "text-indigo-200" : "text-amber-200"}`}
-        >
-          <WoodcutMoon />
-        </svg>
-      </div>
-    </div>
+      <svg aria-hidden="true" viewBox="-60 -60 120 120" className="veil-outgoing">
+        <Outgoing />
+      </svg>
+      <svg aria-hidden="true" viewBox="-60 -60 120 120" className="veil-incoming">
+        <Incoming />
+      </svg>
+    </div>,
+    document.body,
   );
 }

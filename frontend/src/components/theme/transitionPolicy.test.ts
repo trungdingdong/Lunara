@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   IDLE_MS,
+  INCOMING_FROM,
+  OUTGOING_TO,
   SINGLE_SWEEP_MS,
   nextTransition,
   type TransitionInput,
@@ -55,5 +57,10 @@ describe("transitionPolicy", () => {
   it("honors the timing budgets", () => {
     expect(SINGLE_SWEEP_MS).toBeLessThanOrEqual(1500);
     expect(IDLE_MS).toBeLessThanOrEqual(1000);
+  });
+
+  it("stages the rise: newcomer from the bottom, outgoing out the top", () => {
+    expect(INCOMING_FROM).toBe("bottom");
+    expect(OUTGOING_TO).toBe("top-exit");
   });
 });
