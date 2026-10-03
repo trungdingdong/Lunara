@@ -1,4 +1,10 @@
-﻿import type { DrawnCard } from "@/lib/api";
+﻿/**
+ * @deprecated Superseded by `CeremonyFan` (005-card-draw-ceremony), which
+ * replaces the automatic deal with a shuffle → fan → hand-pick ceremony.
+ * Kept in tree for backwards compatibility. Removal is a separate cleanup
+ * task. Do not use in new code.
+ */
+import type { DrawnCard } from "@/lib/api";
 import { DEFAULT_DEAL_TIMING, useDealSequence, useSingleFire } from "@/lib/dealSequence";
 import { TarotCard } from "@/components/TarotCard";
 

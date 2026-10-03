@@ -5,7 +5,7 @@ import "@/theme/material";
 import { api } from "@/lib/api";
 import { queryKeys } from "@/lib/queryKeys";
 import { useReadingSession } from "@/lib/readingSession";
-import { CardFan } from "@/components/CardFan";
+import { CeremonyFan } from "@/components/CeremonyFan";
 import { MoonSteps } from "@/components/MoonSteps";
 import { SpreadPicker } from "@/components/SpreadPicker";
 import { StreamPane } from "@/components/StreamPane";
@@ -87,6 +87,10 @@ export function ReadingView() {
             </md-filled-button>
           </div>
         </section>
+      ) : stage === "creating" ? (
+        <section aria-label="Shuffling the deck">
+          <CeremonyFan cards={[]} shuffling onAllRevealed={() => {}} />
+        </section>
       ) : readingId ? (
         <section aria-label="Your reading">
           <blockquote className="mx-auto mb-12 max-w-2xl text-center">
@@ -96,7 +100,13 @@ export function ReadingView() {
             </p>
           </blockquote>
 
-          <CardFan key={readingKey} cards={cards} onAllRevealed={session.beginStreaming} />
+          <CeremonyFan
+            key={readingKey}
+            cards={cards}
+            shuffling={false}
+            revealAll={stage === "reading" || stage === "failed"}
+            onAllRevealed={session.beginStreaming}
+          />
 
           <div className="mx-auto max-w-2xl">
             <StreamPane text={interpretation} streaming={streaming} failed={failed} />

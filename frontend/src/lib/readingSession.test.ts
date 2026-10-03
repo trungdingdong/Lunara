@@ -88,4 +88,12 @@ describe("readingSession reducer", () => {
 
     expect(state).toEqual(IDLE);
   });
+
+  it("T003 locks the stage machine shape for the ceremony (no new stages)", () => {
+    expect(Object.keys(IDLE)).toEqual(["stage", "readingId", "cards", "interpretation", "streamFinished"]);
+    expect(IDLE.stage).toBe("ask");
+    // streaming gates on full reveal: tokens ignored until reveal-complete
+    const dealing = inDealing();
+    expect(reducer(dealing, { kind: "reveal-complete" }).stage).toBe("reading");
+  });
 });
